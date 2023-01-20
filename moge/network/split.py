@@ -1,0 +1,263 @@
+import pprint
+from abc import abstractmethod
+from collections import defaultdict
+from typing import Dict, List, Tuple, Any, Set
+
+import networkx as nx
+import numpy as np
+import pandas as pd
+import tqdm
+from logzero import logger
+from networkx.classes.reportviews import EdgeView
+
+from moge.model.tensor import tensor_sizes
+
+
+class TrainTestSplit():
+    nodes: pd.Series
+    networks: Dict[str, nx.Graph]
+
+    def __init__(self) -> None:
+        self.training = None
+        self.testing = None
+        self.validation = None
+
+        self.train_nodes = defaultdict(set)
+        self.valid_nodes = defaultdict(set)
+        self.test_nodes = defaultdict(set)
+
+    @abstractmethod
+    def split_edges(self, node_list=None, test_frac=.05, val_frac=.01, seed=0, verbose=False):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def split_nodes(self, node_list, test_frac=.05, val_frac=.01, seed=0, verbose=False):
+        """
+        Randomly remove nodes from node_list with test_frac  and val_frac. Then, collect the edges with types in edge_types
+        into the val_edges_dict and test_edges_dict. Edges not in the edge_types will be added back to the graph.
+
+        :param self: HeterogeneousNetwork
+        :param node_list: a list of nodes to split from
+        :param edge_types: edges types to remove
+        :param test_frac: fraction of edges to remove from training set to add to test set
+        :param val_frac: fraction of edges to remove from training set to add to validation set
+        :param seed:
+        :param verbose:
+        :return: network, val_edges_dict, test_edges_dict
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def split_stratified(self, stratify_label: str, stratify_omic=True, n_splits=5, dropna=False, seed=42,
+                         verbose=False):
+        """
+        Randomly remove nodes from node_list with test_frac  and val_frac. Then, collect the edges with types in edge_types
+        into the val_edges_dict and test_edges_dict. Edges not in the edge_types will be added back to the graph.
+
+        :param self: HeterogeneousNetwork
+        :param node_list: a list of nodes to split from
+        :param edge_types: edges types to remove
+        :param test_frac: fraction of edges to remove from training set to add to test set
+        :param val_frac: fraction of edges to remove from training set to add to validation set
+        :param seed:
+        :param verbose:
+        :return: network, val_edges_dict, test_edges_dict
+        """
+        raise NotImplementedError()
+
+    def get_train_generator(self, generator, split_idx=None, **kwargs):
+        if not hasattr(self, "training"):
+            raise Exception("Must run split_train_test on the network first.")
+
+        if split_idx is not None:
+            assert split_idx < len(self.train_test_splits)
+            node_list = self.train_test_splits[split_idx][0]
+        else:
+            node_list = self.training.node_list
+
+        kwargs['network'] = self
+        kwargs['node_list'] = node_list
+
+        gen_inst = generator(**kwargs)
+        self.tokenizer = gen_inst.seq_tokenizer
+
+        return gen_inst
+
+    def get_test_generator(self, generator, split_idx=None, **kwargs):
+        if not hasattr(self, "testing"):
+            raise Exception("Must run split_train_test on the network first.")
+
+        if split_idx is not None:
+            assert split_idx < len(self.train_test_splits)
+            node_list = self.train_test_splits[split_idx][1]
+        else:
+            node_list = self.testing.node_list
+
+        kwargs['network'] = self
+        kwargs['node_list'] = node_list
+
+        # A feature to ensure the test data has the same tokenizer as the train data
+        if hasattr(self, "tokenizer"):
+            kwargs["tokenizer"] = self.tokenizer
+        gen_inst = generator(**kwargs)
+
+        return gen_inst
+
+    def label_edge_trainvalidtest(self, edges: List[Tuple[str, str]], train=False, valid=False, test=False) \
+            -> List[Tuple[str, str, Dict[str, Any]]]:
+
+        train_mask = np.where(train, np.ones(len(edges), dtype=bool), np.zeros(len(edges), dtype=bool))
+        valid_mask = np.where(valid, np.ones(len(edges), dtype=bool), np.zeros(len(edges), dtype=bool))
+        test_mask = np.where(test, np.ones(len(edges), dtype=bool), np.zeros(len(edges), dtype=bool))
+        edge_attr = [{'train_mask': train, 'valid_mask': valid, 'test_mask': test} \
+                     for train, valid, test in zip(train_mask, valid_mask, test_mask)]
+        edges = [(u, v, d) for (u, v), d in zip(edges, edge_attr)]
+        return edges
+
+    def update_traintest_nodes_set(self, train_nodes: Dict[str, Set[str]], valid_nodes: Dict[str, Set[str]],
+                                   test_nodes: Dict[str, Set[str]], verbose=False) -> None:
+        """
+        Given a subset of nodes in train/valid/test, mark all nodes in the HeteroNetwork to be either train/valid/test.
+        Args:
+            train_nodes ():
+            valid_nodes ():
+            test_nodes ():
+
+        Returns:
+
+        """
+        logger.info(pprint.pformat(tensor_sizes(
+            dict(train_nodes=train_nodes, valid_nodes=valid_nodes, test_nodes=test_nodes)))) if verbose else None
+
+        if not hasattr(self, 'train_nodes'):
+            self.train_nodes = defaultdict(set)
+            self.valid_nodes = defaultdict(set)
+            self.test_nodes = defaultdict(set)
+
+        train_nodes, valid_nodes, test_nodes = defaultdict(set, train_nodes), \
+                                               defaultdict(set, valid_nodes), \
+                                               defaultdict(set, test_nodes)
+        if hasattr(self, "train_nodes"):
+            train_nodes = {ntype: self.train_nodes[ntype].union(train_nodes[ntype]) \
+                           for ntype in set(self.train_nodes.keys()).union(train_nodes.keys())}
+        if hasattr(self, "valid_nodes"):
+            valid_nodes = {ntype: self.valid_nodes[ntype].union(valid_nodes[ntype]) \
+                           for ntype in set(self.valid_nodes.keys()).union(valid_nodes.keys())}
+        if hasattr(self, "test_nodes"):
+            test_nodes = {ntype: self.test_nodes[ntype].union(test_nodes[ntype]) \
+                          for ntype in set(self.test_nodes.keys()).union(test_nodes.keys())}
+
+        self.train_nodes, self.valid_nodes, self.test_nodes = defaultdict(set, train_nodes), \
+                                                              defaultdict(set, valid_nodes), \
+                                                              defaultdict(set, test_nodes)
+
+    def get_all_edges_mask(self, edgelist: EdgeView, metapath: Tuple[str, str, str],
+                           train_nodes: Dict[str, Set[str]], valid_nodes: Dict[str, Set[str]],
+                           test_nodes: Dict[str, Set[str]]) \
+            -> Dict[Tuple[str, str, str], Dict[str, Dict[str, Any]]]:
+        """
+
+        Args:
+            edgelist ():
+            metapath ():
+            train_nodes ():
+            valid_nodes ():
+            test_nodes ():
+
+        Returns:
+
+        """
+        train_nodes = defaultdict(set, train_nodes)
+        valid_nodes = defaultdict(set, valid_nodes)
+        test_nodes = defaultdict(set, test_nodes)
+
+        def _get_edge_mask(u: str, v: str) -> Dict[str, Any]:
+            head_type, tail_type = metapath[0], metapath[-1]
+            train = u in train_nodes[head_type] and v in train_nodes[tail_type]
+            valid = u in valid_nodes[head_type] or v in valid_nodes[tail_type]
+            test = u in test_nodes[head_type] or v in test_nodes[tail_type]
+            if not valid and not test and not train:
+                train = valid = test = True
+            return {'train_mask': train, 'valid_mask': valid, 'test_mask': test}
+
+        edge_attrs = {edge_tup: _get_edge_mask(edge_tup[0], edge_tup[1]) \
+                      for edge_tup, d in edgelist.items()}
+
+        return edge_attrs
+
+    def get_node_mask(self, node_dict: Dict[str, Set[str]], train=False, valid=False, test=False,
+                      ntypes: Set[str] = None) \
+            -> Dict[str, Dict[str, Dict[str, Any]]]:
+        mask = {'train_mask': train, 'valid_mask': valid, 'test_mask': test}
+
+        node_attrs = {key: {node: mask[key] \
+                            for ntype, node_list in node_dict.items() if ntypes and ntype in ntypes \
+                            for node in node_list} \
+                      for key in ["train_mask", "valid_mask", "test_mask"]}
+
+        return node_attrs
+
+    def set_edge_traintest_mask(self, train_nodes: Dict[str, Set[str]] = None, valid_nodes: Dict[str, Set[str]] = None,
+                                test_nodes: Dict[str, Set[str]] = None,
+                                exclude_metapaths: List[Tuple[str, str, str]] = None):
+        if train_nodes is None:
+            train_nodes = self.train_nodes
+        if valid_nodes is None:
+            valid_nodes = self.valid_nodes
+        if test_nodes is None:
+            test_nodes = self.test_nodes
+
+        for ntype in set(train_nodes.keys()).intersection(set(valid_nodes.keys())).intersection(set(test_nodes.keys())):
+            test_overlap_train = test_nodes[ntype].intersection(train_nodes[ntype])
+            valid_overlap_train = valid_nodes[ntype].intersection(train_nodes[ntype])
+            if any(test_overlap_train):
+                logger.warn(f"{ntype} test ({len(test_nodes[ntype])}) overlap train ({len(train_nodes[ntype])}): "
+                            f" {len(test_overlap_train)}")
+            if any(valid_overlap_train):
+                logger.warn(f"{ntype} valid ({len(valid_nodes[ntype])}) overlap train ({len(train_nodes[ntype])}): "
+                            f"{len(valid_overlap_train)}")
+
+        # Set train/valid/test mask of edges on hetero graph if they're incident to the train/valid/test nodes
+        etypes_networks_prog = tqdm.tqdm(self.networks.items(), desc=f"Set train/valid/test_mask on edge types")
+        for metapath, nxgraph in etypes_networks_prog:
+            if exclude_metapaths is not None and metapath in exclude_metapaths:
+                continue
+            etypes_networks_prog.set_description(f"Set train/valid/test_mask on edges in {metapath}")
+            edge_attrs = self.get_all_edges_mask(nxgraph.edges, metapath=metapath, train_nodes=train_nodes,
+                                                 valid_nodes=valid_nodes, test_nodes=test_nodes)
+            nx.set_edge_attributes(nxgraph, edge_attrs)
+
+        # Add non-incident nodes to the train nodes, since they do not belong in the valid_nodes or test_nodes
+        incident_nodes = {ntype: set(train_nodes[ntype] if ntype in train_nodes else []) |
+                                 set(valid_nodes[ntype] if ntype in valid_nodes else []) |
+                                 set(test_nodes[ntype] if ntype in test_nodes else []) \
+                          for ntype in self.nodes.keys()}
+        nonincident_nodes = {ntype: set(nodelist).difference(incident_nodes[ntype]) \
+                             for ntype, nodelist in self.nodes.items()}
+        nonincident_nodes = defaultdict(set, {k: v for k, v in nonincident_nodes.items() if v})
+
+        train_nodes = {ntype: train_nodes[ntype].union(nonincident_nodes[ntype]) \
+                       for ntype in set(train_nodes.keys()).union(nonincident_nodes.keys())}
+        valid_nodes = {ntype: valid_nodes[ntype].union(nonincident_nodes[ntype]) \
+                       for ntype in set(valid_nodes.keys()).union(nonincident_nodes.keys())}
+        test_nodes = {ntype: test_nodes[ntype].union(nonincident_nodes[ntype]) \
+                      for ntype in set(test_nodes.keys()).union(nonincident_nodes.keys())}
+
+        # Set train/valid/test_mask on node types
+        ntype_networks_prog = tqdm.tqdm(self.networks.keys(), desc=f"Set train/valid/test_mask on node types")
+        for metapath in ntype_networks_prog:
+            ntype_networks_prog.set_description(f"Set train/valid/test_mask on nodes in {metapath}")
+            for nodes_dict in [train_nodes, valid_nodes, test_nodes]:
+                node_attr_dict = self.get_node_mask(nodes_dict,
+                                                    train=nodes_dict is train_nodes,
+                                                    valid=nodes_dict is valid_nodes,
+                                                    test=nodes_dict is test_nodes,
+                                                    ntypes=metapath[::2])
+                for key, node_attrs in node_attr_dict.items():
+                    nx.set_node_attributes(self.networks[metapath], values=node_attrs, name=key)
+
+        self.node_mask_counts = pd.DataFrame(
+            tensor_sizes(train_nodes=train_nodes | self.nodes.drop(train_nodes).map(len).to_dict(),
+                         valid_nodes=valid_nodes | self.nodes.drop(valid_nodes).map(len).to_dict(),
+                         test_nodes=test_nodes | self.nodes.drop(test_nodes).map(len).to_dict()),
+            dtype='int')

@@ -1,0 +1,25 @@
+numpy
+pandas
+scipy >= 1.8
+networkx>=2.1
+boto3
+dask
+plotly
+pyvis
+python-igraph
+colorhash
+biopython
+bioservices
+gseapy
+obonet
+iterative-stratification
+scikit-multilearn
+wandb
+pytorch-lightning
+pytorch-ignite
+ogb
+torchmetrics
+torchtext
+fairscale
+logzero
+torch_geometrics==2.1.0

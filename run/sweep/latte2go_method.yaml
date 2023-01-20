@@ -1,0 +1,80 @@
+program: run/latte_node.py
+method: random
+
+metric:
+  goal: maximize
+  name: "val_aupr"
+
+parameters:
+  dataset:
+    values: [ 'UniProt' ]
+  root_path:
+    values:
+      - '~/PycharmProjects/Multiplex-Graph-Embedding/data/heteronetwork/DGG_HUMAN_MOUSE_MirTarBase_TarBase_LncBase_RNAInter_STRING_BioGRID_mRNAprotein_transcriptlevel.network.pickle'
+  labels_dataset:
+    values:
+      - 'DGG'
+  #  add_parents:
+  #    values:
+  #      - true
+  #      - true
+  pred_ntypes:
+    values:
+      - 'biological_process'
+  #      - 'molecular_function'
+  #      - 'cellular_component'
+  #  go_etypes:
+  #    values:
+  #      - 'is_a part_of has_part'
+  #      - 'is_a'
+  #      - null
+  #  exclude_etypes:
+  #    values:
+  #      - null
+  #      - 'Protein.protein-protein.Protein'
+  #  feature:
+  #    values:
+  #      - true
+  #      - false
+  ntype_subset:
+    values:
+      - 'Protein MessengerRNA MicroRNA LncRNA biological_process cellular_component molecular_function'
+      - 'Protein MessengerRNA MicroRNA LncRNA'
+      - 'Protein MessengerRNA MicroRNA'
+      - 'Protein MessengerRNA'
+      - 'Protein'
+      - ''
+  #  inductive:
+  #    values:
+  #      - false
+  #      - true
+  embedding_dim:
+    values: [ 256 ]
+  layer_pooling:
+    values: [ 'concat' ]
+  n_layers:
+    values: [ 2 ]
+  neighbor_loader:
+    values: [ 'HGTLoader' ]
+  layernorm:
+    values: [ true, false ]
+
+  loss_type:
+    values: [ "BCE_WITH_LOGITS" ]
+  use_pos_weights:
+    values: [ false ]
+  config:
+    values: [ "run/configs/_latte2go_helper.yaml" ]
+
+  t_order:
+    values: [ 1, 2 ]
+#  n_neighbors:
+#    values: [ 1024 ]
+#  attn_heads:
+#    values: [ 4 ]
+#  attn_dropout:
+#    values: [ 0.5 ]
+#  dropout:
+#    values: [ 0.0, 0.5 ]
+#  weight_decay:
+#    values: [ 0.01 ]

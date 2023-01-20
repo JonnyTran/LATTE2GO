@@ -1,0 +1,19 @@
+program: run/run_node_clf.py
+method: grid
+metric:
+  name: val_fmax
+  goal: maximize
+parameters:
+  dataset:
+    values: [ "MULTISPECIES" ]
+  pred_ntypes:
+    values: [ 'molecular_function', 'biological_process', 'cellular_component' ]
+
+  method:
+    values: [ "LATTE2GO-1", "LATTE-1", "LATTE2GO-2", "HGT", "DeepGraphGO", "MLP", "DeepGOZero", 'RGCN' ]
+
+  inductive:
+    values: [ false ]
+  seed:
+    values: [ 1 ]
+

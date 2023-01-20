@@ -1,0 +1,28 @@
+program: run/run_node_clf.py
+method: grid
+metric:
+  name: val_fmax
+  goal: maximize
+parameters:
+  dataset:
+    values: [ "HUMAN_MOUSE", "HUMAN_MOUSE_unsplit" ]
+  pred_ntypes:
+    values: [ 'biological_process' ]
+
+  method:
+    values: [ "LATTE-1", "LATTE-2" ]
+
+  layer_pooling:
+    values: [ 'concat', 'last' ]
+
+  ntype_subset:
+    values:
+      - 'Protein MessengerRNA MicroRNA LncRNA biological_process cellular_component molecular_function'
+      - 'Protein MessengerRNA MicroRNA LncRNA'
+      - 'Protein biological_process'
+      - 'Protein'
+
+  inductive:
+    values: [ false ]
+  seed:
+    values: [ 1 ]
