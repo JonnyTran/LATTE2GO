@@ -15,8 +15,25 @@ python download_data.py
 ```
 
 # Run LATTE2GO experiments
+<details><summary>Parameters for run/train.py</summary> 
+```yaml
+dataset:
+  values: [ "MULTISPECIES" ]
+pred_ntypes:
+  values: [ 'molecular_function', 'biological_process', 'cellular_component' ]
+
+method:
+  values: [ "LATTE2GO-1", "LATTE-1", "LATTE2GO-2", "HGT", "DeepGraphGO", "MLP", "DeepGOZero", 'RGCN' ]
+
+inductive:
+  values: [ false ]
+seed:
+  values: [ 1 ]
+```
+</details>
+
 ```bash
-python run/train.py --config_file config/latte2go.yaml
+python run/train.py --method LATTE2GO-1 --dataset MULTISPECIES --pred_ntypes molecular_function --seed 1
 ```
 
 # Citation

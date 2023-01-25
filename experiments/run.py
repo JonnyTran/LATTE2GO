@@ -259,11 +259,6 @@ if __name__ == "__main__":
     parser.add_argument('--ntype_subset', type=str, default="Protein")
     parser.add_argument('--layer_pooling', type=str, default="concat")
 
-    parser.add_argument('--use_emb', type=str,
-                        default="/home/jonny/PycharmProjects/MultiOmicsGraphEmbedding/moge/module/dgl/NARS/")
-    parser.add_argument('--root_path', type=str,
-                        default="/home/jonny/Bioinformatics_ExternalData/OGB/")
-
     parser.add_argument('--train_ratio', type=float, default=None)
     parser.add_argument('--early_stopping', type=int, default=15)
 
@@ -276,7 +271,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, default=random.randint(0, int(1e4)))
     parser.add_argument('--hours', type=int, default=23)
 
-    parser.add_argument('-y', '--config', help="configuration file *.yml", type=str, required=False)
+    parser.add_argument('-y', '--config', help="configuration file *.yml", type=str, required=False, defaul='experiments/configs/latte2go.yaml')
     # add all the available options to the trainer
     args = parse_yaml_config(parser)
     train(args)
