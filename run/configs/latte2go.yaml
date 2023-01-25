@@ -1,0 +1,36 @@
+#dataset: "UniProtGOA_HUMAN"
+deepgraphgo_data: 'data/DeepGraphGO/data'
+uniprotgoa_path: 'data/UniProtGOA/goa_uniprot_all.processed.parquet'
+labels_dataset: 'DGG'
+
+sequence: false
+
+head_node_type: "Protein"
+ntype_subset: "Protein"
+filter_self_metapaths: true
+
+use_reverse: true
+add_parents: true
+batch_size: 2048
+feature: true
+neighbor_loader: 'HGTLoader'
+n_neighbors: 2048
+
+attn_heads: 4
+attn_activation: "LeakyReLU"
+activation: "relu"
+n_layers: 2
+attn_dropout: 0.2
+dropout: 0.0
+layer_pooling: 'concat'
+
+inductive: false
+
+loss_type: "BCE_WITH_LOGITS"
+max_epochs: 1000
+sweep: true
+lr: 0.001
+weight_decay: 0.01
+min_epochs: 60
+#hours: 7
+early_stopping: 15

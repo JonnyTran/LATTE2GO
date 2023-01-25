@@ -19,6 +19,6 @@ def download_file_from_s3(bucket_name:str, s3_file_path:str, data_dir="data", ):
 if __name__ == "__main__":
     # Download the file from s3 bucket
     print('Downloading file from s3 bucket...')
-    download_file_from_s3(bucket_name='latte2go-cafa-dataset', s3_file_path="Protein.pickle",
-                          data_dir="data/UniProt.InterPro.MULTISPECIES.DGG.parents/Protein.pickle")
-    print('Download `data/UniProt.InterPro.MULTISPECIES.DGG.parents/Protein.pickle` complete!')
+    download_file_from_s3(bucket_name='latte2go-cafa-dataset', s3_file_path="heterodata.pt",
+                          data_dir="data/UniProt.InterPro.MULTISPECIES.DGG.parents/heterodata.pt")
+    print('Download to `data/UniProt.InterPro.MULTISPECIES.DGG.parents/heterodata.pt` complete!')

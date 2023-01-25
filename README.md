@@ -11,11 +11,12 @@ conda install --file requirements.txt
 ## Build dataset
 Run the following commands to download necessary files to `data` folder
 ```bash
-
+python download_data.py
 ```
 
 # Run LATTE2GO experiments
 ```bash
+python run/train.py --config_file config/latte2go.yaml
 ```
 
 # Citation
