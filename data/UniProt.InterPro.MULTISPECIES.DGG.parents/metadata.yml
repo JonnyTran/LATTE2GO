@@ -1,0 +1,161 @@
+_name: UniProt.MULTISPECIES.DGG.parents.feature.PBMC-iphaaa-bpmfcc
+classes:
+- 29570
+edge_dir: in
+head_node_type: Protein
+hparams:
+  add_parents: true
+  cls_graph: true
+  deepgraphgo_data: ../DeepGraphGO/data
+  feature: true
+  go_etypes: 3
+  head_node_type: Protein
+  inductive: false
+  labels_dataset: DGG
+  min_count: null
+  n_classes: 29570
+  n_layers: 2
+  n_neighbors: 2048
+  neighbor_loader: HGTLoader
+  neighbor_sizes:
+  - 2048
+  - 2048
+  ntype_subset: 4
+  pred_ntypes: 3
+  species: MULTISPECIES
+  test_date: '2021-04-01'
+  train_date: '2018-01-01'
+  undirected_ntypes: 1
+  uniprotgoa_path: ~/Bioinformatics_ExternalData/UniProtGOA/goa_uniprot_all.processed.parquet
+  use_reverse: true
+  valid_date: '2018-07-02'
+inductive: false
+metapaths:
+- !!python/tuple
+  - cellular_component
+  - is_a
+  - cellular_component
+- !!python/tuple
+  - cellular_component
+  - part_of
+  - cellular_component
+- !!python/tuple
+  - cellular_component
+  - has_part
+  - cellular_component
+- !!python/tuple
+  - molecular_function
+  - is_a
+  - molecular_function
+- !!python/tuple
+  - molecular_function
+  - has_part
+  - molecular_function
+- !!python/tuple
+  - molecular_function
+  - has_part
+  - biological_process
+- !!python/tuple
+  - biological_process
+  - part_of
+  - molecular_function
+- !!python/tuple
+  - biological_process
+  - is_a
+  - biological_process
+- !!python/tuple
+  - biological_process
+  - part_of
+  - biological_process
+- !!python/tuple
+  - biological_process
+  - has_part
+  - biological_process
+- !!python/tuple
+  - Protein
+  - neighborhood
+  - Protein
+- !!python/tuple
+  - Protein
+  - cooccurence
+  - Protein
+- !!python/tuple
+  - Protein
+  - physical
+  - Protein
+- !!python/tuple
+  - Protein
+  - fusion
+  - Protein
+- !!python/tuple
+  - Protein
+  - coexpression
+  - Protein
+- !!python/tuple
+  - cellular_component
+  - rev_is_a
+  - cellular_component
+- !!python/tuple
+  - cellular_component
+  - rev_part_of
+  - cellular_component
+- !!python/tuple
+  - cellular_component
+  - rev_has_part
+  - cellular_component
+- !!python/tuple
+  - molecular_function
+  - rev_is_a
+  - molecular_function
+- !!python/tuple
+  - molecular_function
+  - rev_has_part
+  - molecular_function
+- !!python/tuple
+  - biological_process
+  - rev_has_part
+  - molecular_function
+- !!python/tuple
+  - molecular_function
+  - rev_part_of
+  - biological_process
+- !!python/tuple
+  - biological_process
+  - rev_is_a
+  - biological_process
+- !!python/tuple
+  - biological_process
+  - rev_part_of
+  - biological_process
+- !!python/tuple
+  - biological_process
+  - rev_has_part
+  - biological_process
+multilabel: true
+n_classes: 29570
+name: UniProt.MULTISPECIES.DGG.parents.feature.PBMC-iphaaa-bpmfcc
+neg_pred_metapaths: []
+neighbor_loader: HGTLoader
+neighbor_sizes:
+- 2048
+- 2048
+node_types: 4
+nodes_namespace:
+  Protein:
+  - 239987
+  biological_process:
+  - 28140
+  cellular_component:
+  - 4180
+  molecular_function:
+  - 11238
+ntype_mapping:
+  BPO: biological_process
+  CCO: cellular_component
+  MFO: molecular_function
+pred_metapaths: []
+pred_ntypes: 3
+split_namespace: true
+tags: 9
+undirected_ntypes: 1
+use_reverse: true
