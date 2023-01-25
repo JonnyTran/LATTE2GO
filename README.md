@@ -9,9 +9,7 @@ Please read the following instructions carefully before running the code.
 conda install --file requirements.txt
 ```
 ## Build dataset
-There are two options to obtain the dataset used by LATTE2GO: (1) build the dataset or (2) download a pre-built dataset.
-
-- (1) Build the dataset
+Run the following commands to download necessary files to `data` folder
 ```bash
 
 ```

@@ -37,21 +37,6 @@ def parse_yaml_config(parser: ArgumentParser) -> Namespace:
     return args
 
 
-def adjust_batch_size(hparams):
-    batch_size = hparams.batch_size
-    if batch_size < 0: return batch_size
-
-    if hparams.n_neighbors > 256:
-        batch_size = batch_size // (hparams.n_neighbors // 128)
-    if hparams.embedding_dim > 128:
-        batch_size = batch_size // (hparams.embedding_dim // 128)
-    if hparams.n_layers > 2:
-        batch_size = batch_size // (hparams.n_layers - 1)
-
-    logger.info(f"Adjusted batch_size to", batch_size)
-
-    return int(batch_size)
-
 
 def select_empty_gpus(num_gpus=1) -> List[int]:
     pynvml.nvmlInit()

@@ -23,7 +23,7 @@ from moge.model.tensor import tensor_sizes
 
 from run.datasets.deepgraphgo import build_deepgraphgo_model
 from run.utils import parse_yaml_config, select_empty_gpus
-from run.load_data import load_node_dataset
+from run.datasets.load import load_node_dataset
 
 
 def train(hparams):
