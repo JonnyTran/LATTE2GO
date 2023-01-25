@@ -21,9 +21,9 @@ sys.path.insert(0, "../")
 from moge.model.PyG.node_clf import LATTEFlatNodeClf, HGTNodeClf, MLP, RGCNNodeClf
 from moge.model.tensor import tensor_sizes
 
-from run.datasets.deepgraphgo import build_deepgraphgo_model
-from run.utils import parse_yaml_config, select_empty_gpus
-from run.datasets.load import load_node_dataset
+from experiments.datasets.deepgraphgo import build_deepgraphgo_model
+from experiments.utils import parse_yaml_config, select_empty_gpus
+from experiments.datasets.load import load_node_dataset
 
 
 def train(hparams):
