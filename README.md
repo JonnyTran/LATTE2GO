@@ -16,7 +16,7 @@ python download_data.py
 
 # Run LATTE2GO experiments
 <details><summary>Parameters for run/train.py</summary> 
-```
+```yml
 dataset:
   values: [ "MULTISPECIES" ]
 pred_ntypes:
