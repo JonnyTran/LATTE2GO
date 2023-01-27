@@ -16,7 +16,7 @@ import pytorch_lightning
 from pytorch_lightning.trainer import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
 
-sys.path.insert(0, "../")
+sys.path.insert(0, "../LATTE2GO/")
 
 from moge.model.PyG.node_clf import LATTEFlatNodeClf, HGTNodeClf, MLP, RGCNNodeClf
 from moge.model.tensor import tensor_sizes
@@ -57,7 +57,7 @@ def train(hparams):
     if hparams.method == "HGT":
         USE_AMP = False
         default_args = {
-            "embedding_dim": 256,
+            "embedding_dim": 512,
             "n_layers": 2,
             # "fanouts": [10, 10],
             "batch_size": 2 ** 11,
@@ -81,7 +81,7 @@ def train(hparams):
     elif hparams.method == "RGCN":
         USE_AMP = False
         default_args = {
-            "embedding_dim": 256,
+            "embedding_dim": 512,
             "n_layers": 2,
             "batch_size": 2 ** 11,
             "activation": "relu",
@@ -169,7 +169,7 @@ def train(hparams):
     elif 'MLP' == hparams.method:
         dataset.neighbor_sizes = [0]
         hparams.__dict__.update({
-            "embedding_dim": 256,
+            "embedding_dim": 512,
             "n_layers": len(dataset.neighbor_sizes),
             'neighbor_sizes': dataset.neighbor_sizes,
             "batch_size": 2 ** 12,
@@ -249,29 +249,26 @@ def update_hparams_from_env(hparams: Namespace, dataset=None):
 if __name__ == "__main__":
     parser = ArgumentParser()
 
-    parser.add_argument('--method', type=str, default="LATTE")
+    parser.add_argument('--method', type=str, default="LATTE2GO-2")
 
     parser.add_argument('--embedding_dim', type=int, default=128)
     parser.add_argument('--inductive', type=bool, default=False)
 
-    parser.add_argument('--dataset', type=str, default="ACM")
+    parser.add_argument('--pred_ntypes', type=str, default="biological_process")
+
+    parser.add_argument('--dataset', type=str, default="MULTISPECIES")
     parser.add_argument('--pred_ntypes', type=str, default="biological_process")
     parser.add_argument('--ntype_subset', type=str, default="Protein")
-    parser.add_argument('--layer_pooling', type=str, default="concat")
 
     parser.add_argument('--train_ratio', type=float, default=None)
     parser.add_argument('--early_stopping', type=int, default=15)
-
-    # Ablation study
-    parser.add_argument('--disable_alpha', type=bool, default=False)
-    parser.add_argument('--disable_beta', type=bool, default=False)
-    parser.add_argument('--disable_concat', type=bool, default=False)
 
     parser.add_argument('--num_gpus', type=int, default=1)
     parser.add_argument('--seed', type=int, default=random.randint(0, int(1e4)))
     parser.add_argument('--hours', type=int, default=23)
 
-    parser.add_argument('-y', '--config', help="configuration file *.yml", type=str, required=False, defaul='experiments/configs/latte2go.yaml')
+    parser.add_argument('-y', '--config', help="configuration file *.yml", type=str, required=False,
+                        default='experiments/configs/latte2go.yaml')
     # add all the available options to the trainer
     args = parse_yaml_config(parser)
     train(args)

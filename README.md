@@ -54,12 +54,17 @@ LATTE2GO hyperparameters, modify the `experiments/configs/latte2go.yaml` file wi
       - 'Protein MessengerRNA'
       - 'Protein'
       - ''
-  
+  go_etypes:
+    values:
+      - 'is_a part_of has_part regulates negatively_regulates positively_regulates'
+      - 'is_a part_of has_part'
+      - 'is_a'
+      - null
 ```
 </details>
 
 ```bash
-python experimentrs/run.py --method LATTE2GO-1 --config experiments/configs/latte2go.yaml --dataset MULTISPECIES --pred_ntypes molecular_function
+python experiments/run.py --method LATTE2GO-1 --config experiments/configs/latte2go.yaml --dataset MULTISPECIES --pred_ntypes molecular_function
 ```
 
 # Citation

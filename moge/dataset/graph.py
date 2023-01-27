@@ -156,7 +156,6 @@ class Graph:
 
 class HeteroGraphDataset(torch.utils.data.Dataset, Graph):
     network: HeteroNetwork
-    tokenizer: BertSequenceTokenizer
 
     def __init__(self, dataset: Union[PyGInMemoryDataset, PygNodePropPredDataset, PygLinkPropPredDataset,
     DglNodePropPredDataset, DglLinkPropPredDataset, HeteroData],
