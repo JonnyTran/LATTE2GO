@@ -22,13 +22,21 @@ def load_node_dataset(name: str, method, hparams: Namespace,
 
     elif "HUMAN_MOUSE" in name or "MULTISPECIES" in name:
         if name == 'HUMAN_MOUSE':
-            dataset_path = 'data/heteronetwork/UniProt.InterPro.HUMAN_MOUSE.DGG.parents'
+            dataset_path = 'data/UniProt.InterPro.HUMAN_MOUSE.DGG.parents/'
         elif name == "MULTISPECIES":
-            dataset_path = 'data/heteronetwork/UniProt.InterPro.MULTISPECIES.DGG.parents'
+            dataset_path = 'data/UniProt.InterPro.MULTISPECIES.DGG.parents/'
+        else:
+            raise Exception(f"Dataset name {name} not supported.")
 
-        mlb_paths = glob.glob(f'data/DeepGraphGO/data/{hparams.pred_ntypes}.mlb')
-        if mlb_paths:
-            hparams.mlb_path = mlb_paths[0]
+        if hparams.pred_ntypes == "biological_process":
+            hparams.mlb_path = f'data/DeepGraphGO/data/bp_go.mlb'
+        elif hparams.pred_ntypes == "molecular_function":
+            hparams.mlb_path = f'data/DeepGraphGO/data/mf_go.mlb'
+        elif hparams.pred_ntypes == "cellular_component":
+            hparams.mlb_path = f'data/DeepGraphGO/data/cc_go.mlb'
+        else:
+            # Prediction on classes of two or more ontologies
+            hparams.mlb_path = f'data/all_go.mlb'
 
         with open(latte2go_yaml, 'r') as f:
             hparams.__dict__.update(yaml.safe_load(f))
