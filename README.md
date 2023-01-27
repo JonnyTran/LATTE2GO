@@ -1,15 +1,22 @@
 # LATTE2GO: Layer-stacking Attention for protein function prediction on Gene Ontology
-Protein function prediction by incorporating knowledge graph representation of heterogeneous interactions and Gene Ontology
 
-# Preprequisites
+In this repository, you will be able to reproduce the results of the paper 
+"Protein function prediction by incorporating knowledge graph representation of heterogeneous interactions and Gene Ontology."
+In addition, you will be able to run the ablation experiments to study the effect of various heterogeneous dataset inputs 
+and parameters on the model performance.
+
+If there is any problem with the code, please open an issue or contact me at `nhat.tran@mavs.uta.edu`.
+
+# Prerequisites
 Please execute the following instructions before running the code.
 
 ## Install dependencies
 ```bash
 conda install --file requirements.txt
 ```
+
 ## Build dataset
-Run the following commands to download necessary files to `data` folder
+Run the following commands to download necessary files to `data/` directory:
 ```bash
 python download_data.py
 ```
@@ -23,7 +30,7 @@ Run the following commands to train and evaluate the model on the DeepGraphGO mu
 
 ```yml
 dataset:
-  values: [ "MULTISPECIES" ]
+  values: [ "MULTISPECIES", "HUMAN_MOUSE" ]
 pred_ntypes:
   values: [ 'molecular_function', 'biological_process', 'cellular_component', 'molecular_function biological_process cellular_component' ]
 method:
@@ -64,7 +71,7 @@ LATTE2GO hyperparameters, modify the `experiments/configs/latte2go.yaml` file wi
 </details>
 
 ```bash
-python experiments/run.py --method LATTE2GO-1 --config experiments/configs/latte2go.yaml --dataset MULTISPECIES --pred_ntypes molecular_function
+python experiments/run.py --method LATTE2GO-2 --config experiments/configs/latte2go.yaml --dataset MULTISPECIES --pred_ntypes molecular_function
 ```
 
 # Citation
