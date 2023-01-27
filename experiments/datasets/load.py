@@ -22,9 +22,9 @@ def load_node_dataset(name: str, method, hparams: Namespace,
 
     elif "HUMAN_MOUSE" in name or "MULTISPECIES" in name:
         if name == 'HUMAN_MOUSE':
-            dataset_path = 'data/UniProt.InterPro.HUMAN_MOUSE.DGG.parents/'
+            dataset_path = 'data/UniProt.InterPro.HUMAN_MOUSE.DGG.HeteroNetwork/'
         elif name == "MULTISPECIES":
-            dataset_path = 'data/UniProt.InterPro.MULTISPECIES.DGG.parents/'
+            dataset_path = 'data/UniProt.InterPro.MULTISPECIES.DGG.HeteroNetwork/'
         else:
             raise Exception(f"Dataset name {name} not supported.")
 
@@ -38,9 +38,11 @@ def load_node_dataset(name: str, method, hparams: Namespace,
             # Prediction on classes of two or more ontologies
             hparams.mlb_path = f'data/all_go.mlb'
 
+        # Update additional params from `experiments/configs/latte2go.yaml`
         with open(latte2go_yaml, 'r') as f:
             hparams.__dict__.update(yaml.safe_load(f))
 
+        # If using LATTE2GO, include the GO ntypes to the hetero graph ntypes
         if 'LATTE2GO' in hparams.method and hparams.pred_ntypes not in hparams.ntype_subset:
             hparams.ntype_subset = hparams.ntype_subset + ' ' + hparams.pred_ntypes
 

@@ -186,7 +186,7 @@ def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
         elif dataset_path.rstrip('/').endswith('.HeteroNetwork'):
             network = HeteroNetwork.load(dataset_path)
         else:
-            raise Exception(f"Cannot load HeteroNetwork from {dataset_path}")
+            raise Exception(f"Cannot load a .HeteroNetwork/ suffix directory from {dataset_path}")
 
         if not hasattr(network, 'train_nodes'):
             network.train_nodes = defaultdict(set)
