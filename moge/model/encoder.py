@@ -4,7 +4,6 @@ from collections import OrderedDict
 from typing import Dict, Union, List
 
 import torch
-from esm.model.esm2 import ESM2
 from torch import nn, Tensor
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from torch_sparse import SparseTensor
@@ -200,7 +199,7 @@ class HeteroSequenceEncoder(nn.Module):
                 encoders[ntype] = BertForSequenceClassification(bert_config)
                 print("BertForSequenceClassification default BertConfig", ntype)
 
-        self.seq_encoders: Dict[str, Union[BertForSequenceClassification, LSTMSequenceEncoder, ESM2]] = \
+        self.seq_encoders: Dict[str, Union[BertForSequenceClassification, LSTMSequenceEncoder]] = \
             nn.ModuleDict(encoders)
 
     def forward(self, sequences: Dict[str, Dict[str, Tensor]], split_size: Union[float, int] = None) \
@@ -228,7 +227,7 @@ class HeteroSequenceEncoder(nn.Module):
                 lengths = inputs["input_ids"].ne(0).sum(1)
                 h_out[ntype] = model.forward(seqs=inputs["input_ids"], lengths=lengths)
 
-            elif isinstance(model, ESM2):
+            elif isinstance(model, 'ESM2'):
                 # ESM
                 n_layers = len(model.layers)
                 sequence_embs = []

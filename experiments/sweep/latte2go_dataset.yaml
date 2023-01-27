@@ -8,10 +8,6 @@ metric:
 parameters:
   dataset:
     values: [ 'UniProt' ]
-  root_path:
-    values:
-      - '~/PycharmProjects/Multiplex-Graph-Embedding/data/heteronetwork/DGG_HUMAN_MOUSE_MirTarBase_TarBase_LncBase_RNAInter_STRING_BioGRID_mRNAprotein_transcriptlevel.network.pickle'
-#      - '~/PycharmProjects/Multiplex-Graph-Embedding/data/heteronetwork/DGG_MirTarBase_TarBase_LncBase_RNAInter_STRING_BioGRID_mRNAprotein_transcriptlevel.network.pickle'
   labels_dataset:
     values:
       - 'DGG'

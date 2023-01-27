@@ -28,7 +28,7 @@ from moge.model.PyG.conv import HGT, RGCN
 from moge.model.PyG.latte import LATTE as LATTE_Flat
 from moge.model.PyG.metapaths import get_edge_index_values
 from moge.model.PyG.relations import RelationAttention, RelationMultiLayerAgg
-from moge.model.classifier import DenseClassification, LabelGraphNodeClassifier, LabelNodeClassifer
+from moge.model.classifier import DenseClassification, LabelNodeClassifer
 from moge.model.dgl.DeepGraphGO import pair_aupr, fmax
 from moge.model.encoder import HeteroSequenceEncoder, HeteroNodeFeatureEncoder
 from moge.model.losses import ClassificationLoss
@@ -316,8 +316,6 @@ class LATTEFlatNodeClf(AFPNodeClf):
         # Output layer
         if self.embedder.layer_pooling == 'concat':
             hparams.embedding_dim = hparams.embedding_dim * hparams.n_layers
-        if "cls_graph" in hparams and isinstance(hparams.cls_graph, (dgl.DGLHeteroGraph, dgl.DGLGraph)):
-            self.classifier = LabelGraphNodeClassifier(dataset, hparams)
         elif dataset.pred_ntypes is not None and dataset.class_indices:
             self.classifier = LabelNodeClassifer(dataset, hparams)
         else:

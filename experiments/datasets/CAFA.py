@@ -17,7 +17,6 @@ from openomics.database.ontology import UniProtGOA, get_predecessor_terms
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from moge.dataset.PyG.hetero_generator import HeteroNodeClfDataset
-from moge.dataset.sequences import SequenceTokenizers
 from moge.model.dgl.DeepGraphGO import load_protein_dataset
 from moge.network.hetero import HeteroNetwork
 from moge.network.labels import to_list_of_strs
@@ -316,22 +315,6 @@ def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
     else:
         hparams.neighbor_sizes = [hparams.n_neighbors] * max_order
 
-    # Sequences
-    if hasattr(hparams, 'sequence') and hparams.sequence:
-        if 'vocabularies' in hparams:
-            vocabularies = hparams.vocabularies
-        else:
-            vocabularies = {"MicroRNA": "armheb/DNA_bert_3",
-                            "LncRNA": "armheb/DNA_bert_6",
-                            "MessengerRNA": "armheb/DNA_bert_6",
-                            'Protein': 'zjukg/OntoProtein',
-                            'GO_term': "dmis-lab/biobert-base-cased-v1.2", }
-        sequence_tokenizers = SequenceTokenizers(
-            vocabularies=vocabularies,
-            max_length=hparams.max_length if 'max_length' in hparams else None)
-    else:
-        sequence_tokenizers = None
-
     # Create dataset
     dataset = HeteroNodeClfDataset.from_heteronetwork(
         network,
@@ -339,8 +322,8 @@ def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
         labels_subset=geneontology.data.index.intersection(go_classes),
         min_count=min_count,
         expression=feature,
-        sequence=sequence_tokenizers is not None,
-        seq_tokenizer=sequence_tokenizers,
+        sequence=None,
+        seq_tokenizer=None,
         add_reverse_metapaths=use_reverse,
         undirected_ntypes=getattr(hparams, 'undirected_ntypes', ['Protein']),
         head_node_type=head_ntype,

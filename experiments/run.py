@@ -16,7 +16,7 @@ import pytorch_lightning
 from pytorch_lightning.trainer import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
 
-sys.path.insert(0, "../LATTE2GO/")
+sys.path.insert(0, "../LATTE2GO/") # Needed to import moge
 
 from moge.model.PyG.node_clf import LATTEFlatNodeClf, HGTNodeClf, MLP, RGCNNodeClf
 from moge.model.tensor import tensor_sizes
@@ -35,8 +35,7 @@ def train(hparams):
     MIN_EPOCHS = getattr(hparams, 'min_epochs', 60)
 
     ### Dataset
-    dataset = load_node_dataset(hparams.dataset, hparams.method, hparams=hparams, train_ratio=hparams.train_ratio,
-                                dataset_path=hparams.root_path)
+    dataset = load_node_dataset(hparams.dataset, hparams.method, hparams=hparams, dataset_path=None)
     if dataset is not None:
         hparams.n_classes = dataset.n_classes
         hparams.head_node_type = dataset.head_node_type
@@ -253,8 +252,6 @@ if __name__ == "__main__":
 
     parser.add_argument('--embedding_dim', type=int, default=128)
     parser.add_argument('--inductive', type=bool, default=False)
-
-    parser.add_argument('--pred_ntypes', type=str, default="biological_process")
 
     parser.add_argument('--dataset', type=str, default="MULTISPECIES")
     parser.add_argument('--pred_ntypes', type=str, default="biological_process")

@@ -26,7 +26,7 @@ def parse_yaml_config(parser: ArgumentParser) -> Namespace:
         opt = yaml.load(open(args.config), Loader=yaml.FullLoader)
         args_dict = args.__dict__
 
-        opt = {k: v for k, v in opt.items if k not in args}
+        opt = {k: v for k, v in opt.items() if k not in args}
         args_dict.update(opt)
         args = Namespace(**args_dict)
 
