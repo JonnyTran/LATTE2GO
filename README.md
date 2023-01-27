@@ -15,7 +15,9 @@ Please execute the following instructions before running the code.
 conda install --file requirements.txt
 ```
 
-## Build dataset
+## Download the dataset
+The MULTISPECIES and HUMAN_MOUSE dataset for AFP is downloadable from AWS S3.
+
 Run the following commands to download necessary files to `data/` directory:
 ```bash
 python download_data.py

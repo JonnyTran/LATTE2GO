@@ -1,17 +1,14 @@
 import logging
 import os
+from argparse import ArgumentParser
 from pathlib import Path
+from typing import List
 
 import boto3
 import botocore
 import tqdm
+from botocore.client import BaseClient
 
-# Download a file from s3 bucket to the `data` directory without using credentials
-def download_file_from_s3(bucket_name:str, s3_file_path:str, data_dir="data", ):
-    s3 = boto3.client('s3', region_name='us-west-2',
-                      # config=boto3.session.Config(signature_version='s3v4')
-                      )
-    s3.download_file(bucket_name, s3_file_path, data_dir)
 
 def get_file_folders(s3_client, bucket_name, prefix=""):
     file_names = []
@@ -43,31 +40,53 @@ def get_file_folders(s3_client, bucket_name, prefix=""):
     return file_names, folders
 
 
-def download_files(s3_client, bucket_name, local_path, file_names, folders):
+def download_files(s3: BaseClient, bucket_name:str, local_path:str, file_names:List[str], folders:List[str]):
     local_path = Path(local_path)
 
     for folder in folders:
         folder_path = Path.joinpath(local_path, folder) # Create all folders in the path
         folder_path.mkdir(parents=True, exist_ok=True)
 
-    for file_name in file_names:
-        file_path = Path.joinpath(local_path, file_name) # Create folder for parent directory
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        s3_client.download_file(
-            bucket_name,
-            file_name,
-            str(file_path)
-        )
+    for file_name in tqdm.tqdm(file_names, desc=f"Downloading dataset files to {local_path}", total=len(file_names)):
+        object_size = s3.head_object(Bucket=bucket_name, Key=file_name)["ContentLength"]
+
+        with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=file_name) as pbar:
+            file_path = Path.joinpath(local_path, file_name) # Create folder for parent directory
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            s3.download_file(
+                bucket_name,
+                file_name,
+                str(file_path),
+                Callback=lambda bytes_transferred: pbar.update(bytes_transferred),
+
+            )
 
 
 if __name__ == "__main__":
     # Download the file from s3 bucket
-    client = boto3.client("s3")
+    try:
+        client = boto3.client("s3")
+    except botocore.exceptions.NoCredentialsError:
+        logging.error("No AWS credentials found! Please create your AWS credentials if you haven't done so, "
+                      "and store them at ~/.aws/credentials.")
+        exit(1)
 
-    file_names, folders = get_file_folders(client, "latte2go-cafa-dataset")
-    print(file_names, folders)
+    # Create an ArgumentParser with two parameters, bucket_name and output_dir to call the script from the command line
+    parser = ArgumentParser()
+    parser.add_argument("--bucket_name", type=str, help="Name of the bucket to download from", default="latte2go-cafa-dataset")
+    parser.add_argument("--output_dir", type=str, help="Directory to download the files to", default="data/")
+    args = parser.parse_args()
 
-    # print('Downloading file from s3 bucket...')
-    # download_file_from_s3(bucket_name='latte2go-cafa-dataset', s3_file_path="heterodata.pt",
-    #                       data_dir="data/UniProt.InterPro.MULTISPECIES.DGG.parents/heterodata.pt")
-    # print('Download to `data/UniProt.InterPro.MULTISPECIES.DGG.parents/heterodata.pt` complete!')
+    file_names, folders = get_file_folders(client, args.bucket_name)
+
+    download_files(
+        client,
+        args.bucket_name,
+        args.output_dir,
+        file_names,
+        folders
+    )
+
+
+
+
