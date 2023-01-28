@@ -74,7 +74,7 @@ def download_url_files(output_dir:str, baseurl:str, files:List[str]):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--bucket_name", type=str, help="Name of the bucket to download from",
-                        default="latte2go-cafa-dataset")
+                        default="arn:aws:s3:us-west-2:770865302968:accesspoint/latte2go-cafa-dataset-ap")
     parser.add_argument("--output_dir", type=str, help="Directory to download the files to", default="data/")
     args = parser.parse_args()
 
