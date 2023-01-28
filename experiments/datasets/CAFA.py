@@ -289,7 +289,7 @@ def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
         mlb: MultiLabelBinarizer = joblib.load(mlb_path)
         go_classes.append(mlb.classes_)
 
-    go_classes = np.hstack(go_classes) if len(go_classes) > 1 else go_classes[0]
+    go_classes = np.unique(np.hstack(go_classes)) if len(go_classes) > 1 else go_classes[0]
     min_count = None
 
     logger.info(f'Loaded MultiLabelBinarizer with {go_classes.shape} {",".join(pred_ntypes)} classes')

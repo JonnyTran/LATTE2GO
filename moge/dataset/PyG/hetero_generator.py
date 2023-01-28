@@ -338,6 +338,7 @@ class HeteroNodeClfDataset(HeteroGraphDataset):
     def class_indices(self) -> Optional[Dict[str, Tensor]]:
         if self.pred_ntypes is None or set(self.pred_ntypes).difference(self.nodes.keys()) or self.classes is None:
             return None
+
         class_indices = {}
         for pred_ntype in self.pred_ntypes:
             indices = self.nodes[pred_ntype].get_indexer_for(self.classes)
