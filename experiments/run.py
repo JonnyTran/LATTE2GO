@@ -194,7 +194,7 @@ def train(hparams):
 
     logger = WandbLogger(name=getattr(hparams, 'method', model.name()),
                          tags=list(set(tags)),
-                         project="LATTE2GO")
+                         anonymous=True)
     logger.log_hyperparams(tensor_sizes(hparams))
 
     if hparams.early_stopping:
