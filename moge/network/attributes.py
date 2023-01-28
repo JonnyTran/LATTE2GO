@@ -11,8 +11,8 @@ from openomics.transforms.agg import concat_uniques
 from sklearn import preprocessing
 
 from moge.network.labels import select_labels, to_list_of_strs
-
-
+SEQUENCE_COL = 'sequence'
+MODALITY_COL = 'omic'
 class Network(object):
     def __init__(self, networks: Dict[Tuple[str], nx.Graph]) -> None:
         """

@@ -10,7 +10,7 @@ import tqdm
 from botocore.client import BaseClient
 import urllib.request
 
-def get_file_folders(s3_client, bucket_name, prefix=""):
+def get_s3_file_folders(s3:BaseClient, bucket_name:str, prefix=""):
     file_names = []
     folders = []
 
@@ -25,7 +25,7 @@ def get_file_folders(s3_client, bucket_name, prefix=""):
         if next_token != "":
             updated_kwargs["ContinuationToken"] = next_token
 
-        response = s3_client.list_objects_v2(**updated_kwargs)
+        response = s3.list_objects_v2(**updated_kwargs)
         contents = response.get("Contents")
 
         for result in contents:
@@ -40,7 +40,7 @@ def get_file_folders(s3_client, bucket_name, prefix=""):
     return file_names, folders
 
 
-def download_files(s3: BaseClient, bucket_name:str, output_dir:str, file_names:List[str], folders:List[str]):
+def download_s3_files(s3: BaseClient, bucket_name:str, output_dir:str, file_names:List[str], folders:List[str]):
     output_dir = Path(output_dir)
 
     for folder in folders:
@@ -62,16 +62,11 @@ def download_files(s3: BaseClient, bucket_name:str, output_dir:str, file_names:L
             )
 
 
-def download_DeepGraphGO_dataset(output_dir:str,
-                                 url="https://raw.githubusercontent.com/yourh/DeepGraphGO/master/data/",
-                                 files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
-                                        'data.z06']):
+def download_url_files(output_dir:str, baseurl:str, files:List[str]):
     for filename in tqdm.tqdm(files, desc='Downloading DeepGraphGO dataset'):
-        urllib.request.urlretrieve(url,
-                                   filename=os.path.join(output_dir, "DeepGraphGO/data", filename))
-    print("Unzipping DeepGraphGO dataset")
-    os.system("cd data/DeepGraphGO/data && dtrx -f data.zip")
-    print("Done!")
+        urllib.request.urlretrieve(os.path.join(baseurl, filename),
+                                   filename=os.path.join(output_dir, filename))
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -79,8 +74,6 @@ if __name__ == "__main__":
                         default="latte2go-cafa-dataset")
     parser.add_argument("--output_dir", type=str, help="Directory to download the files to", default="data/")
     args = parser.parse_args()
-
-    download_DeepGraphGO_dataset(output_dir=args.output_dir)
 
     try:
         client = boto3.client("s3")
@@ -90,8 +83,15 @@ if __name__ == "__main__":
         exit(1)
 
     # Download the HeteroNetwork datasets
-    file_names, folders = get_file_folders(client, args.bucket_name)
-    download_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
-                   file_names=file_names, folders=folders)
+    file_names, folders = get_s3_file_folders(client, args.bucket_name)
+    download_s3_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
+                      file_names=file_names, folders=folders)
 
-
+    # Download DeepGraphGO dataset
+    download_url_files(output_dir=os.path.join(args.output_dir, "DeepGraphGO/data"),
+                       baseurl="https://raw.githubusercontent.com/yourh/DeepGraphGO/master/data/",
+                       files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
+                                        'data.z06'])
+    print("Unzipping DeepGraphGO dataset")
+    os.system("cd data/DeepGraphGO/data && dtrx -f data.zip")
+    print("Done!")

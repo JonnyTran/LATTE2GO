@@ -13,15 +13,19 @@ bioservices
 gseapy
 obonet
 iterative-stratification
-scikit-multilearn
+scikit-learn
 wandb
+pytorch
 pytorch-lightning
 pytorch-ignite
-ogb
+dgl-cuda11.6
 torchmetrics
 torchtext
+torch_geometrics >= 2.1.0
 fairscale
 logzero
-torch_geometrics >= 2.1.0
 dtrx
-dgl-cuda11.6
+joblib
+logzero
+tqdm
+ruamel.yaml
