@@ -35,7 +35,7 @@ def train(hparams):
     MIN_EPOCHS = getattr(hparams, 'min_epochs', 60)
 
     ### Dataset
-    dataset = load_node_dataset(hparams.dataset, hparams.method, hparams=hparams, dataset_path=None)
+    dataset = load_node_dataset(hparams.dataset, hparams.method, hparams=hparams)
     if dataset is not None:
         hparams.n_classes = dataset.n_classes
         hparams.head_node_type = dataset.head_node_type
