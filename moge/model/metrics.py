@@ -294,7 +294,6 @@ class FMax_Slow(torchmetrics.Metric):
         """
         super().__init__()
         self.thresholds = np.linspace(0, 1.0, thresholds)
-        self.shrink = torch.nn.Hardshrink(lambd=1e-2)
         self.reset()
 
     def reset(self):
@@ -306,7 +305,7 @@ class FMax_Slow(torchmetrics.Metric):
         n_samples = scores.shape[0]
         with torch.no_grad():
             if isinstance(scores, Tensor):
-                scores = self.shrink(scores).cpu().numpy()
+                scores = scores.cpu().numpy()
 
             if isinstance(targets, SparseTensor):
                 targets = targets.to_scipy()
