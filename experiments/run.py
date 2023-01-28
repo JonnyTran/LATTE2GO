@@ -55,7 +55,6 @@ def train(hparams):
         METRICS = ["micro_f1", "macro_f1", dataset.name() if "ogb" in dataset.name() else "accuracy"]
         early_stopping_args = dict(monitor='val_loss', mode='min')
 
-
     if hparams.method == "HGT":
         USE_AMP = False
         default_args = {
@@ -96,7 +95,6 @@ def train(hparams):
         }
 
         model = RGCNNodeClf(Namespace(**default_args), dataset, metrics=METRICS)
-
 
     elif "LATTE" in hparams.method:
         USE_AMP = False
@@ -185,8 +183,6 @@ def train(hparams):
 
     else:
         raise Exception(f"Unknown model {hparams.model}")
-
-    model.train_metrics.metrics = {}
 
     tags = [] + hparams.dataset.split(" ")
     if hasattr(hparams, "namespaces"):
