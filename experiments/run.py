@@ -243,24 +243,31 @@ def update_hparams_from_env(hparams: Namespace, dataset=None):
 if __name__ == "__main__":
     parser = ArgumentParser()
 
-    parser.add_argument('--method', type=str, default="LATTE2GO-2")
+    parser.add_argument('--method', type=str, default="LATTE2GO-2",
+                        help="Method to use")
 
-    parser.add_argument('--embedding_dim', type=int, default=128)
-    parser.add_argument('--inductive', type=bool, default=False)
+    parser.add_argument('--embedding_dim', type=int, default=512,
+                        help="Embedding dimension")
+    parser.add_argument('--inductive', type=bool, default=False,
+                        help="Whether to use inductive training, which remove edges in the validation and test sets")
 
-    parser.add_argument('--dataset', type=str, default="MULTISPECIES")
-    parser.add_argument('--pred_ntypes', type=str, default="biological_process")
-    parser.add_argument('--ntype_subset', type=str, default="Protein")
+    parser.add_argument('--dataset', type=str, default="MULTISPECIES",
+                        help="Dataset name")
+    parser.add_argument('--pred_ntypes', type=str, default="biological_process",
+                        help="Space-separated string of GO types to predict")
+    parser.add_argument('--ntype_subset', type=str, default="Protein",
+                        help="Space-separated string of node types in the heterogeneous graph to use for training")
 
-    parser.add_argument('--train_ratio', type=float, default=None)
-    parser.add_argument('--early_stopping', type=int, default=5)
+    parser.add_argument('--early_stopping', type=int, default=5,
+                        help="Number of epochs to wait before early stopping")
 
-    parser.add_argument('--num_gpus', type=int, default=1)
-    parser.add_argument('--seed', type=int, default=random.randint(0, int(1e4)))
-    parser.add_argument('--hours', type=int, default=23)
+    parser.add_argument('--num_gpus', type=int, default=1, help="Number of GPUs to use")
+    parser.add_argument('--seed', type=int, default=random.randint(0, int(1e4)), help="Random seed")
+    parser.add_argument('--hours', type=int, default=23, help="Maximum number of hours to train for")
 
-    parser.add_argument('-y', '--config', help="configuration file *.yml", type=str, required=False,
-                        default='experiments/configs/latte2go.yaml')
+    parser.add_argument('-y', '--config', type=str, required=False,
+                        default='experiments/configs/latte2go.yaml',
+                        help="Path to YAML configuration file")
     # add all the available options to the trainer
     args = parse_yaml_config(parser)
     train(args)
