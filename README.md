@@ -25,9 +25,9 @@ pip install -r requirements.txt
 
 ## Download the dataset
 There are two datasets used in the paper: DeepGraphGO's dataset and the pre-built HeteroNetwork datasets 
-i.e. MULTISPECIES, HUMAN_MOUSE datasets. DeepGraphGO's dataset can be downloaded from [DeepGraphGO GitHub repo](https://github.com/yourh/DeepGraphGO).
+i.e. MULTISPECIES, HUMAN_MOUSE datasets. DeepGraphGO's dataset is downloaded from the [DeepGraphGO GitHub repo](https://github.com/yourh/DeepGraphGO) automatically with our script. The MULTISPECIES and HUMAN_MOUSE datasets are downloaded from AWS S3. 
 
-The MULTISPECIES and HUMAN_MOUSE datasets are downloadable from AWS S3. **You must have [created an AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/), have AWS CLI installed, and configured your credentials to download the datasets.**
+**You must have [created an AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/), have AWS CLI installed, and configured your credentials to download the datasets.**
 
 Run the following commands to download necessary files to `data/` directory:
 ```bash

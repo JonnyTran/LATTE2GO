@@ -277,17 +277,16 @@ def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
     else:
         raise Exception('`labels_dataset` must be "DGG" or "GOA"')
 
-    # Classes (DGG)
+    # GO classes from DGG
     go_classes = []
     rename_dict = {'molecular_function': 'mf', 'biological_process': 'bp', 'cellular_component': 'cc',
                    'mf': 'mf', 'bp': 'bp', 'cc': 'cc'}
 
     for pred_ntype in pred_ntypes:
         namespace = rename_dict[pred_ntype]
-        if getattr(hparams, 'mlb_path', None):
-            mlb: MultiLabelBinarizer = joblib.load(hparams.mlb_path)
-        else:
-            mlb: MultiLabelBinarizer = joblib.load(os.path.join(deepgraphgo_path, f'{namespace}_go.mlb'))
+        mlb_path = getattr(hparams, 'mlb_path', os.path.join(deepgraphgo_path, f'{namespace}_go.mlb'))
+        print("Loading MultiLabelBinarizer from", mlb_path)
+        mlb: MultiLabelBinarizer = joblib.load(mlb_path)
         go_classes.append(mlb.classes_)
 
     go_classes = np.hstack(go_classes) if len(go_classes) > 1 else go_classes[0]
