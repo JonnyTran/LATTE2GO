@@ -97,6 +97,7 @@ if __name__ == "__main__":
                                         'data.z06'])
     print("Unzipping DeepGraphGO dataset")
     os.system("cd data/DeepGraphGO/data")
-    os.system("dtrx -fvo data.zip")
+    os.system("dtrx -fo data.zip")
+    print("Preprocessing DeepGraphGO dataset")
     os.system("python preprocessing.py ppi_mat.npz ppi_dgl_top_100")
     print("Done!")
