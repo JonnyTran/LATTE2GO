@@ -40,7 +40,7 @@ def train(hparams):
         hparams.n_classes = dataset.n_classes
         hparams.head_node_type = dataset.head_node_type
         print("dataset.pred_ntypes", dataset.pred_ntypes)
-        print(tensor_sizes(class_indices=dataset.class_indices))
+        print(tensor_sizes(n_classes=dataset.n_classes, class_indices=dataset.class_indices))
 
 
     ### Callbacks
