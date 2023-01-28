@@ -48,7 +48,6 @@ class LabelNodeClassifer(nn.Module):
             self.activation = nn.Softmax()
 
         self.reset_parameters()
-        print({key:getattr(self, key) for key in dir(self) if not key.startswith('_')})
 
     def reset_parameters(self):
         if hasattr(self, 'weight'):

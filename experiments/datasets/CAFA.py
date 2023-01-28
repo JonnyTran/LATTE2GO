@@ -284,7 +284,7 @@ def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
 
     for pred_ntype in pred_ntypes:
         namespace = rename_dict[pred_ntype]
-        mlb_path = getattr(hparams, 'mlb_path', os.path.join(deepgraphgo_path, f'{namespace}_go.mlb'))
+        mlb_path = os.path.join(deepgraphgo_path, f'{namespace}_go.mlb')
         logger.info(f"Loading MultiLabelBinarizer from {mlb_path}", )
         mlb: MultiLabelBinarizer = joblib.load(mlb_path)
         go_classes.append(mlb.classes_)
