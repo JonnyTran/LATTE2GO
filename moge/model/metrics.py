@@ -125,16 +125,6 @@ class Metrics(torch.nn.Module):
             elif "recall" in name:
                 self.metrics[name] = Recall(average=True, is_multilabel=multilabel)
 
-            elif "top_k" in name:
-                if n_classes:
-                    top_k = [k for k in top_k if k < n_classes]
-
-                if multilabel:
-                    self.metrics[name] = TopKMultilabelAccuracy(k_s=top_k)
-                else:
-                    self.metrics[name] = TopKCategoricalAccuracy(
-                        k=max(int(np.log(n_classes)), 1), output_transform=None
-                    )
             elif "macro_f1" in name:
                 self.metrics[name] = F1Score(num_classes=n_classes, average="macro", top_k=top_k)
             elif "micro_f1" in name:
@@ -157,18 +147,6 @@ class Metrics(torch.nn.Module):
             elif "acc" in name:
                 self.metrics[name] = Accuracy(top_k=top_k, subset_accuracy=multilabel)
 
-            elif "ogbn" in name or any("ogbn" in s for s in name):
-                self.metrics[name] = OGBNodeClfMetrics(
-                    NodeEvaluator(name[0] if isinstance(name, (list, tuple)) else name)
-                )
-            elif "ogbl" in name or any("ogbl" in s for s in name):
-                self.metrics[name] = OGBLinkPredMetrics(
-                    LinkEvaluator(name[0] if isinstance(name, (list, tuple)) else name)
-                )
-            elif "ogbg" in name or any("ogbg" in s for s in name):
-                self.metrics[name] = OGBNodeClfMetrics(
-                    GraphEvaluator(name[0] if isinstance(name, (list, tuple)) else name)
-                )
             else:
                 logger.warn(
                     f"metric name {name} not supported. Must containing a substring in "
@@ -276,9 +254,6 @@ class Metrics(torch.nn.Module):
                 if "ogb" in metric:
                     logs.update(self.metrics[metric].compute(prefix=prefix))
 
-                elif isinstance(self.metrics[metric], TopKMultilabelAccuracy):
-                    logs.update(self.metrics[metric].compute(prefix=prefix))
-
                 elif isinstance(self.metrics[metric], TopKCategoricalAccuracy):
                     metric_name = f"{metric if prefix is None else prefix + str(metric)}@{self.metrics[metric]._k}"
                     logs[metric_name] = self.metrics[metric].compute()
@@ -308,131 +283,6 @@ class Metrics(torch.nn.Module):
         for metric in self.metrics:
             self.metrics[metric].reset()
 
-
-class OGBNodeClfMetrics(torchmetrics.Metric):
-    def __init__(
-            self,
-            evaluator,
-            compute_on_step: bool = True,
-            dist_sync_on_step: bool = False,
-            process_group: Optional[Any] = None,
-            dist_sync_fn: Callable = None,
-    ):
-        super().__init__()
-        self.evaluator = evaluator
-        self.y_pred = []
-        self.y_true = []
-
-    def reset(self):
-        self.y_pred = []
-        self.y_true = []
-
-    def update(self, y_pred, y_true):
-        if isinstance(self.evaluator, (NodeEvaluator, GraphEvaluator)):
-            assert y_pred.dim() == 2
-            if y_true.dim() == 1 or y_true.size(1) == 1:
-                y_pred = y_pred.argmax(axis=1)
-
-        if y_pred.dim() <= 1:
-            y_pred = y_pred.unsqueeze(-1)
-        if y_true.dim() <= 1:
-            y_true = y_true.unsqueeze(-1)
-
-        self.y_true.append(y_true)
-        self.y_pred.append(y_pred)
-
-    def compute(self, prefix=None):
-        if isinstance(self.evaluator, NodeEvaluator):
-            output = self.evaluator.eval(
-                {"y_pred": torch.cat(self.y_pred, dim=0), "y_true": torch.cat(self.y_true, dim=0)}
-            )
-
-        elif isinstance(self.evaluator, LinkEvaluator):
-            y_pred_pos = torch.cat(self.y_pred, dim=0).squeeze(-1)
-            y_pred_neg = torch.cat(self.y_true, dim=0)
-
-            output = self.evaluator.eval({"y_pred_pos": y_pred_pos, "y_pred_neg": y_pred_neg})
-            output = {k.strip("_list"): v.mean().item() for k, v in output.items()}
-
-        elif isinstance(self.evaluator, GraphEvaluator):
-            input_shape = {"y_true": torch.cat(self.y_pred, dim=0), "y_pred": torch.cat(self.y_true, dim=0)}
-            output = self.evaluator.eval(input_shape)
-        else:
-            raise Exception(f"implement eval for {self.evaluator}")
-
-        if prefix is None:
-            return {f"{k}": v for k, v in output.items()}
-        else:
-            return {f"{prefix}{k}": v for k, v in output.items()}
-
-
-class OGBLinkPredMetrics(torchmetrics.Metric):
-    def __init__(self, evaluator: LinkEvaluator, compute_on_step: bool = True):
-        super().__init__()
-        self.evaluator = evaluator
-        self.outputs = {}
-
-    def reset(self):
-        self.outputs = {}
-
-    def update(self, e_pred_pos: Tensor, e_pred_neg: Tensor):
-        if e_pred_pos.dim() > 1:
-            e_pred_pos = e_pred_pos.squeeze(-1)
-
-        output = self.evaluator.eval({"y_pred_pos": e_pred_pos, "y_pred_neg": e_pred_neg})
-        for k, v in output.items():
-            if isinstance(v, float):
-                score = torch.tensor([v])
-                self.outputs.setdefault(k.strip("_list"), []).append(score)
-            else:
-                self.outputs.setdefault(k.strip("_list"), []).append(v.mean())
-
-    def compute(self, prefix=None):
-        output = {k: torch.stack(v, dim=0).mean().item() for k, v in self.outputs.items()}
-
-        if prefix is None:
-            return {f"{k}": v for k, v in output.items()}
-        else:
-            return {f"{prefix}{k}": v for k, v in output.items()}
-
-
-class TopKMultilabelAccuracy(torchmetrics.Metric):
-    def __init__(self, k_s=[5, 10, 50, 100, 200], compute_on_step: bool = True, **kwargs):
-        """
-        Calculates the top-k categorical accuracy
-        Args:
-            k_s ():
-            compute_on_step ():
-            **kwargs ():
-        """
-        super().__init__()
-        self.k_s = k_s
-
-    def reset(self):
-        self._num_correct = {k: 0 for k in self.k_s}
-        self._num_examples = 0
-
-    @torch.no_grad()
-    def update(self, y_pred, y_true):
-        batch_size, n_classes = y_true.size()
-        _, top_indices = y_pred.topk(k=max(self.k_s), dim=1, largest=True, sorted=True)
-
-        for k in self.k_s:
-            y_true_select = torch.gather(y_true, 1, top_indices[:, :k])
-            corrects_in_k = y_true_select.sum(1) * 1.0 / k
-            corrects_in_k = corrects_in_k.sum(0)  # sum across all samples to get # of true positives
-            self._num_correct[k] += corrects_in_k.item()
-        self._num_examples += batch_size
-
-    def compute(self, prefix=None) -> dict:
-        if self._num_examples == 0:
-            raise NotComputableError(
-                "TopKCategoricalAccuracy must have at" "least one example before it can be computed."
-            )
-        if prefix is None:
-            return {f"top_k@{k}": self._num_correct[k] / self._num_examples for k in self.k_s}
-        else:
-            return {f"{prefix}top_k@{k}": self._num_correct[k] / self._num_examples for k in self.k_s}
 
 
 class FMax_Slow(torchmetrics.Metric):

@@ -267,17 +267,3 @@ def process_tensor(input, device=None, dtype=None, half=False):
 
     return input
 
-
-def pad_tensors(sequences):
-    num = len(sequences)
-    max_len = max([s.size(-1) for s in sequences])
-    out_dims = (num, 2, max_len)
-    out_tensor = sequences[0].dataset.new(*out_dims).fill_(0)
-    #     mask = sequences[0].data.new(*out_dims).fill_(0)
-    for i, tensor in enumerate(sequences):
-        length = tensor.size(-1)
-        out_tensor[i, :, :length] = tensor
-    #         mask[i, :length] = 1
-    return out_tensor
-
-
