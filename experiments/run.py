@@ -41,7 +41,6 @@ def train(hparams):
         hparams.head_node_type = dataset.head_node_type
         print(tensor_sizes(n_classes=dataset.n_classes, class_indices=dataset.class_indices))
 
-
     ### Callbacks
     callbacks = []
     METRICS = ["BPO_aupr", "BPO_fmax", "BPO_smin",

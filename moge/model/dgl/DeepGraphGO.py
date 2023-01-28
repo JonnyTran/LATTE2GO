@@ -551,6 +551,8 @@ def load_dgl_graph(data_cnf, model_cnf, model_id=None, subset_pid: List[str] = N
     net_pid_map = {pid: i for i, pid in enumerate(net_pid_list)}
 
     # Load DGL Graph
+    if not os.path.exists(data_cnf['network']['dgl']):
+        raise FileNotFoundError(F'Cannot find DGL graph file: {data_cnf["network"]["dgl"]}. Must ')
     dgl_graph: dgl.DGLGraph = dgl.data.utils.load_graphs(data_cnf['network']['dgl'])[0][0]
     self_loop = torch.zeros_like(dgl_graph.edata['ppi'])
     nr_ = np.arange(dgl_graph.number_of_nodes())

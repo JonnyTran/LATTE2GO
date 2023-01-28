@@ -10,6 +10,9 @@ import tqdm
 from botocore.client import BaseClient
 import urllib.request
 
+from pandas.io.common import is_url
+
+
 def get_s3_file_folders(s3:BaseClient, bucket_name:str, prefix=""):
     file_names = []
     folders = []
@@ -63,7 +66,8 @@ def download_s3_files(s3: BaseClient, bucket_name:str, output_dir:str, file_name
 
 def download_url_files(output_dir:str, baseurl:str, files:List[str]):
     for filename in tqdm.tqdm(files, desc='Downloading DeepGraphGO dataset'):
-        urllib.request.urlretrieve(os.path.join(baseurl, filename),
+        urlpath = os.path.join(baseurl, filename)
+        urllib.request.urlretrieve(urlpath,
                                    filename=os.path.join(output_dir, filename))
 
 
@@ -92,5 +96,7 @@ if __name__ == "__main__":
                        files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
                                         'data.z06'])
     print("Unzipping DeepGraphGO dataset")
-    os.system("cd data/DeepGraphGO/data && dtrx -f -v -o data.zip")
+    os.system("cd data/DeepGraphGO/data")
+    os.system("dtrx -fvo data.zip")
+    os.system("python preprocessing.py ppi_mat.npz ppi_dgl_top_100")
     print("Done!")
