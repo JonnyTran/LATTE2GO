@@ -46,10 +46,9 @@ def main(ppi_net_mat_path, dgl_graph_path, top):
     for u, v, d in tqdm(zip(ppi_net_mat_coo.row, ppi_net_mat_coo.col, ppi_net_mat_coo.data),
                         total=ppi_net_mat_coo.nnz, desc='PPI'):
         nx_graph.add_edge(u, v, ppi=d)
-    dgl_graph = dgl.DGLGraph()
-    dgl_graph.from_networkx(nx_graph, edge_attrs=('ppi',))
+    dgl_graph = dgl.from_networkx(nx_graph, edge_attrs=('ppi',))
     assert dgl_graph.in_degrees().max() <= top
-    dgl.data.utils.save_graphs(dgl_graph_path, dgl_graph)
+    dgl.save_graphs(dgl_graph_path, dgl_graph)
 
 
 if __name__ == '__main__':
