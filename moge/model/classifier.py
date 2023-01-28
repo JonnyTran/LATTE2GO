@@ -48,6 +48,7 @@ class LabelNodeClassifer(nn.Module):
             self.activation = nn.Softmax()
 
         self.reset_parameters()
+        print({key:getattr(self, key) for key in dir(self) if not key.startswith('_')}
 
     def reset_parameters(self):
         if hasattr(self, 'weight'):
@@ -101,7 +102,6 @@ class LabelNodeClassifer(nn.Module):
         for i in range(self.n_classes):
             ntype = pred_ntypes[sort_indices[0][i]]
             cls_offset = class_idx_offset[ntype]
-            print((mix_indices[ntype] == i).nonzero().flatten())
             cls_idx = cls_offset + (mix_indices[ntype] == i).nonzero().flatten().item()
             reorder_idx.append(cls_idx)
 
