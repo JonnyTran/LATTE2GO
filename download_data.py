@@ -58,7 +58,6 @@ def download_s3_files(s3: BaseClient, bucket_name:str, output_dir:str, file_name
                 file_name,
                 str(file_path),
                 Callback=lambda bytes_transferred: pbar.update(bytes_transferred),
-
             )
 
 
@@ -83,9 +82,9 @@ if __name__ == "__main__":
         exit(1)
 
     # Download the HeteroNetwork datasets
-    # file_names, folders = get_s3_file_folders(client, args.bucket_name)
-    # download_s3_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
-    #                   file_names=file_names, folders=folders)
+    file_names, folders = get_s3_file_folders(client, args.bucket_name)
+    download_s3_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
+                      file_names=file_names, folders=folders)
 
     # Download DeepGraphGO dataset
     download_url_files(output_dir=os.path.join(args.output_dir, "DeepGraphGO/data"),
