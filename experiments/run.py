@@ -58,7 +58,6 @@ def train(hparams):
         default_args = {
             "embedding_dim": 512,
             "n_layers": 2,
-            # "fanouts": [10, 10],
             "batch_size": 2 ** 11,
             "activation": "relu",
             "attn_heads": 4,

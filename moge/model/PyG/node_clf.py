@@ -316,7 +316,7 @@ class LATTEFlatNodeClf(AFPNodeClf):
         # Output layer
         if self.embedder.layer_pooling == 'concat':
             hparams.embedding_dim = hparams.embedding_dim * hparams.n_layers
-        elif dataset.pred_ntypes is not None and dataset.class_indices:
+        elif dataset.pred_ntypes and dataset.class_indices:
             self.classifier = LabelNodeClassifer(dataset, hparams)
         else:
             self.classifier = DenseClassification(hparams)
@@ -612,13 +612,7 @@ class HGTNodeClf(AFPNodeClf):
                             node_types=dataset.G.node_types, metadata=dataset.G.metadata())
 
         # Output layer
-        if "cls_graph" in hparams and hparams.cls_graph is not None:
-            self.classifier = LabelGraphNodeClassifier(dataset, hparams)
-
-        elif hparams.nb_cls_dense_size >= 0:
-            self.classifier = DenseClassification(hparams)
-        else:
-            assert hparams.layer_pooling != "concat", "Layer pooling cannot be concat when output of network is a GNN"
+        self.classifier = DenseClassification(hparams)
 
         use_cls_weight = 'use_class_weights' in hparams and hparams.use_class_weights
         self.criterion = ClassificationLoss(loss_type=hparams.loss_type, n_classes=dataset.n_classes,
