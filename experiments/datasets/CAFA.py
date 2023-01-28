@@ -146,6 +146,19 @@ def parse_options(hparams, dataset_path):
 def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
                        save_path='data/', save=True, rebuild=False) \
         -> HeteroNodeClfDataset:
+    """
+    Builds a CAFA dataset given a dataset path and hyperparameters.
+    Args:
+        name ():
+        dataset_path ():
+        hparams ():
+        save_path ():
+        save ():
+        rebuild ():
+
+    Returns:
+
+    """
     target = 'go_id'
 
     add_parents, deepgraphgo_path, exclude_etypes, feature, go_etypes, head_ntype, labels_dataset, ntype_subset, \

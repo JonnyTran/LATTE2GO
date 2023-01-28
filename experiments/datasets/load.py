@@ -15,7 +15,8 @@ from experiments.datasets.CAFA import build_cafa_dataset
 
 def load_node_dataset(name: str, method, hparams: Namespace,
                       dataset_path: str = None,
-                      latte2go_yaml='experiments/configs/latte2go.yaml'):
+                      latte2go_yaml='experiments/configs/latte2go.yaml',
+                      save_path='data/'):
 
     if method == 'DeepGraphGO':
         dataset = None  # will load in method
@@ -46,7 +47,7 @@ def load_node_dataset(name: str, method, hparams: Namespace,
         if 'LATTE2GO' in hparams.method and hparams.pred_ntypes not in hparams.ntype_subset:
             hparams.ntype_subset = hparams.ntype_subset + ' ' + hparams.pred_ntypes
 
-        dataset = build_cafa_dataset('UniProt', dataset_path=dataset_path, hparams=hparams)
+        dataset = build_cafa_dataset('UniProt', dataset_path=dataset_path, hparams=hparams, save_path=save_path)
 
     else:
         raise Exception(f"dataset {name} not found")
