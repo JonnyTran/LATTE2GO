@@ -13,8 +13,7 @@ from moge.network.hetero import HeteroNetwork
 from experiments.datasets.CAFA import build_cafa_dataset
 
 
-def load_node_dataset(name: str, method, hparams: Namespace,
-                      dataset_path: str = None,
+def load_node_dataset(name: str, method:str, hparams: Namespace,
                       latte2go_yaml='experiments/configs/latte2go.yaml',
                       save_path='data/'):
 

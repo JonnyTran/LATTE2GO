@@ -106,7 +106,7 @@ def parse_options(hparams, dataset_path):
     # Pred ntypes
     if isinstance(hparams.pred_ntypes, str):
         assert len(hparams.pred_ntypes)
-        pred_ntypes = hparams.pred_ntypes.split(" ")
+        pred_ntypes = hparams.pred_ntypes = hparams.pred_ntypes.split(" ")
     elif isinstance(hparams.pred_ntypes, Iterable):
         pred_ntypes = hparams.pred_ntypes
     else:
