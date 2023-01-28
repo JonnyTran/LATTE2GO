@@ -3,12 +3,15 @@
 In this repository, you will be able to reproduce the results of the paper 
 "Protein function prediction by incorporating knowledge graph representation of heterogeneous interactions and Gene Ontology."
 In addition, you will be able to run the ablation experiments to study the effect of various heterogeneous dataset inputs 
-and parameters on the model performance.
+and parameters on the LATTE2GO model performance.
 
 If there is any problem with the code, please open an issue or contact me at `nhat.tran@mavs.uta.edu`.
 
 # Prerequisites
-Please execute the following instructions before running the code.
+To run the experiments, you need at least 50GB of RAM to load datasets into memory, and at least 10GB of GPU RAM.
+
+Please install package requirements, download the dataset, and run the bash commands provided by following 
+instructions.
 
 ## Install dependencies
 ```bash
@@ -28,7 +31,7 @@ python download_data.py
 ## AFP experiments
 Run the following commands to train and evaluate the model on the DeepGraphGO multi-species AFP dataset:
 
-<details><summary>Parameters for `run/train.py`</summary> 
+<details><summary>Parameters for `experiments/run.py`</summary> 
 
 ```yml
 dataset:
@@ -45,7 +48,7 @@ seed:
 </details>
 
 ```bash
-python experimentrs/run.py --method LATTE2GO-1 --dataset MULTISPECIES --pred_ntypes molecular_function --seed 1
+python experiments/run.py --method LATTE2GO-1 --dataset MULTISPECIES --pred_ntypes molecular_function --seed 1
 ```
 
 ## LATTE2GO ablation experiments
@@ -55,20 +58,20 @@ LATTE2GO hyperparameters, modify the `experiments/configs/latte2go.yaml` file wi
 <details><summary>Parameters for `experiments/configs/latte2go.yaml`</summary> 
 
 ```yml
-  ntype_subset:
-    values:
-      - 'Protein MessengerRNA MicroRNA LncRNA biological_process cellular_component molecular_function'
-      - 'Protein MessengerRNA MicroRNA LncRNA'
-      - 'Protein MessengerRNA MicroRNA'
-      - 'Protein MessengerRNA'
-      - 'Protein'
-      - ''
-  go_etypes:
-    values:
-      - 'is_a part_of has_part regulates negatively_regulates positively_regulates'
-      - 'is_a part_of has_part'
-      - 'is_a'
-      - null
+ntype_subset:
+  values:
+    - 'Protein MessengerRNA MicroRNA LncRNA biological_process cellular_component molecular_function'
+    - 'Protein MessengerRNA MicroRNA LncRNA'
+    - 'Protein MessengerRNA MicroRNA'
+    - 'Protein MessengerRNA'
+    - 'Protein'
+    - ''
+go_etypes:
+  values:
+    - 'is_a part_of has_part regulates negatively_regulates positively_regulates'
+    - 'is_a part_of has_part'
+    - 'is_a'
+    - null
 ```
 </details>
 
