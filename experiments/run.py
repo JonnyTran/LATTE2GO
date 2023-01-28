@@ -178,7 +178,7 @@ def train(hparams):
         raise Exception(f"Unknown model {hparams.model}")
 
     # Only calculate AUPR metrics on the training loops to reduce compute time
-    model.train_metrics.metrics = {name: metric for name, metric in model.train_metrics.metrics \
+    model.train_metrics.metrics = {name: metric for name, metric in model.train_metrics.metrics.items() \
                                    if name in ["BPO_aupr", "CCO_aupr", "MFO_aupr"]}
 
     tags = [] + hparams.dataset.split(" ")

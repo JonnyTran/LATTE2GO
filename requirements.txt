@@ -17,7 +17,7 @@ wandb
 pytorch
 pytorch-lightning
 pytorch-ignite
-dgl-cuda11.6
+dgl-cuda11.6 == 0.9.*
 torchmetrics
 torchtext
 torch_geometrics >= 2.1.0
