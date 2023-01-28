@@ -74,21 +74,22 @@ def download_url_files(output_dir:str, baseurl:str, files:List[str]):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--bucket_name", type=str, help="Name of the bucket to download from",
-                        default="arn:aws:s3:us-west-2:770865302968:accesspoint/latte2go-cafa-dataset-ap")
+                        default="arn:aws:s3:us-west-2:770865302968:accesspoint/latte2go-cafa-dataset-ap/latte2go-cafa-dataset")
     parser.add_argument("--output_dir", type=str, help="Directory to download the files to", default="data/")
     args = parser.parse_args()
 
+    # Download the HeteroNetwork datasets
     try:
         client = boto3.client("s3")
+        file_names, folders = get_s3_file_folders(client, args.bucket_name)
+        download_s3_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
+                          file_names=file_names, folders=folders)
+
     except botocore.exceptions.NoCredentialsError:
         logging.error("No AWS credentials found! Please create your AWS credentials if you haven't done so, "
                       "and store them at ~/.aws/credentials or run `aws configure`.")
         exit(1)
 
-    # Download the HeteroNetwork datasets
-    file_names, folders = get_s3_file_folders(client, args.bucket_name)
-    download_s3_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
-                      file_names=file_names, folders=folders)
 
     # Download DeepGraphGO dataset
     download_url_files(output_dir=os.path.join(args.output_dir, "DeepGraphGO/data"),
