@@ -291,11 +291,7 @@ class LATTEFlatNodeClf(AFPNodeClf):
         self.collate_fn = collate_fn
 
         # Node attr input
-        if hasattr(dataset, 'seq_tokenizer'):
-            self.seq_encoder = HeteroSequenceEncoder(hparams, dataset)
-
-        if not hasattr(self, "seq_encoder") or len(self.seq_encoder.seq_encoders.keys()) < len(self.node_types):
-            self.encoder = HeteroNodeFeatureEncoder(hparams, dataset)
+        self.encoder = HeteroNodeFeatureEncoder(hparams, dataset)
 
         if dataset.pred_ntypes is not None:
             hparams.pred_ntypes = dataset.pred_ntypes
@@ -316,7 +312,8 @@ class LATTEFlatNodeClf(AFPNodeClf):
         # Output layer
         if self.embedder.layer_pooling == 'concat':
             hparams.embedding_dim = hparams.embedding_dim * hparams.n_layers
-        elif dataset.pred_ntypes and dataset.class_indices:
+
+        if dataset.pred_ntypes and dataset.class_indices:
             self.classifier = LabelNodeClassifer(dataset, hparams)
         else:
             self.classifier = DenseClassification(hparams)

@@ -39,47 +39,6 @@ class NeighborSamplerX(NeighborSampler):
             return self._hetero_sparse_neighbor_sample(query_nodes) + (index.numel(),)
 
 
-# def __call__(self, nids: Union[LongTensor, Dict[str, Tensor]]):
-#     if isinstance(nids, dict):
-#         query_nodes = {ntype: torch.LongTensor(nids) if not isinstance(nids, torch.LongTensor) else nids \
-#                        for ntype, nids in nids.items()}
-#     else:
-#         query_nodes = {self.input_type: torch.LongTensor(nids) \
-#             if not isinstance(nids, torch.LongTensor) else nids}
-#
-#     if self.class_indices is not None:
-#         query_nodes.update(self.class_indices)
-#         batch_size = sum([nids.numel() for ntype, nids in query_nodes.items() if ntype not in self.class_indices])
-#     else:
-#         batch_size = sum([nids.numel() for ntype, nids in query_nodes.items()])
-#
-#     if issubclass(self.data_cls, Data):
-#         sample_fn = torch.ops.torch_sparse.neighbor_sample
-#         node, row, col, edge = sample_fn(
-#             self.colptr,
-#             self.row,
-#             query_nodes,
-#             self.num_neighbors,
-#             self.replace,
-#             self.directed,
-#         )
-#         return node, row, col, edge, batch_size
-#
-#     elif issubclass(self.data_cls, HeteroData):
-#         sample_fn = torch.ops.torch_sparse.hetero_neighbor_sample
-#         node_dict, row_dict, col_dict, edge_dict = sample_fn(
-#             self.node_types,
-#             self.edge_types,
-#             self.colptr_dict,
-#             self.row_dict,
-#             query_nodes,
-#             self.num_neighbors,
-#             self.num_hops,
-#             self.replace,
-#             self.directed,
-#         )
-#         return node_dict, row_dict, col_dict, edge_dict, batch_size
-
 class NeighborLoaderX(NeighborLoader):
 
     def __init__(self, data: Union[Data, HeteroData, Tuple[FeatureStore, GraphStore]], num_neighbors: NumNeighbors,

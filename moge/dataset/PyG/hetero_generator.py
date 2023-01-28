@@ -238,6 +238,8 @@ class HeteroNodeClfDataset(HeteroGraphDataset):
         self.nodes = {ntype: nids for ntype, nids in nodes.items() if ntype in self.node_types}
 
         # Post-processing to fix some data inconsistencies
+        if isinstance(self.pred_ntypes, str):
+            self.pred_ntypes = self.pred_ntypes.split(' ')
         ## Missing classes not in .obo
         for go_ntype in self.pred_ntypes:
             # Missing nodes_namespace
