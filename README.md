@@ -46,7 +46,7 @@ Run the following commands to train and evaluate the model on the DeepGraphGO mu
 dataset:
   values: [ "MULTISPECIES", "HUMAN_MOUSE" ]
 pred_ntypes:
-  values: [ 'molecular_function', 'biological_process', 'cellular_component', 'molecular_function biological_process cellular_component' ]
+  values: [ "molecular_function", "biological_process", "cellular_component", "molecular_function biological_process cellular_component" ]
 method:
   values: [ "LATTE2GO-1", "LATTE-1", "LATTE2GO-2", "HGT", "DeepGraphGO", "MLP", "DeepGOZero", "RGCN" ]
 inductive:
@@ -57,7 +57,7 @@ seed:
 </details>
 
 ```bash
-python experiments/run.py --method LATTE2GO-2 --dataset MULTISPECIES --pred_ntypes molecular_function --seed 1
+python experiments/run.py --method LATTE2GO-2 --dataset MULTISPECIES --pred_ntypes "molecular_function" --seed 1
 ```
 
 ## LATTE2GO ablation experiments

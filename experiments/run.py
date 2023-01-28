@@ -39,6 +39,8 @@ def train(hparams):
     if dataset is not None:
         hparams.n_classes = dataset.n_classes
         hparams.head_node_type = dataset.head_node_type
+        print("class_indices", dataset.class_indices)
+
 
     ### Callbacks
     callbacks = []

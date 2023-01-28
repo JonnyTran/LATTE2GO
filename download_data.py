@@ -93,5 +93,5 @@ if __name__ == "__main__":
                        files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
                                         'data.z06'])
     print("Unzipping DeepGraphGO dataset")
-    os.system("cd data/DeepGraphGO/data && dtrx -f data.zip")
+    os.system("cd data/DeepGraphGO/data && dtrx -f -v -o data.zip")
     print("Done!")
