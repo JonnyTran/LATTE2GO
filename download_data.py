@@ -62,13 +62,16 @@ def download_files(s3: BaseClient, bucket_name:str, output_dir:str, file_names:L
             )
 
 
-def download_DeepGraphGO_dataset(output_dir:str, files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
-                                     'data.z06']):
+def download_DeepGraphGO_dataset(output_dir:str,
+                                 url="https://raw.githubusercontent.com/yourh/DeepGraphGO/master/data/",
+                                 files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
+                                        'data.z06']):
     for filename in tqdm.tqdm(files, desc='Downloading DeepGraphGO dataset'):
-        urllib.request.urlretrieve(f"https://raw.githubusercontent.com/yourh/DeepGraphGO/master/data/{filename}",
+        urllib.request.urlretrieve(url,
                                    filename=os.path.join(output_dir, "DeepGraphGO/data", filename))
+    print("Unzipping DeepGraphGO dataset")
     os.system("cd data/DeepGraphGO/data && dtrx -f data.zip")
-
+    print("Done!")
 
 if __name__ == "__main__":
     parser = ArgumentParser()
