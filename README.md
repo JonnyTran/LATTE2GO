@@ -8,14 +8,19 @@ and parameters on the LATTE2GO model performance.
 If there is any problem with the code, please open an issue or contact me at `nhat.tran@mavs.uta.edu`.
 
 # Prerequisites
-To run the experiments, you need at least 50GB of RAM to load datasets into memory, and at least 10GB of GPU RAM.
+To run the experiments, you need at least 5.5GB of disk space, 50GB of RAM memory, and at least 10GB of GPU RAM.
 
 Please install package requirements, download the dataset, and run the bash commands provided by following 
 instructions.
 
 ## Install dependencies
+Please
 ```bash
 conda install --file requirements.txt
+```
+or alternatively:
+```bash
+pip install -r requirements.txt
 ```
 
 ## Download the dataset
@@ -48,7 +53,7 @@ seed:
 </details>
 
 ```bash
-python experiments/run.py --method LATTE2GO-1 --dataset MULTISPECIES --pred_ntypes molecular_function --seed 1
+python experiments/run.py --method LATTE2GO-2 --dataset MULTISPECIES --pred_ntypes molecular_function --seed 1
 ```
 
 ## LATTE2GO ablation experiments

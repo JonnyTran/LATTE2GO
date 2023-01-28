@@ -144,7 +144,7 @@ def parse_options(hparams, dataset_path):
 
 
 def build_cafa_dataset(name: str, dataset_path: str, hparams: Namespace,
-                       save_path='~/Bioinformatics_ExternalData/LATTE2GO/', save=True, rebuild=False) \
+                       save_path='data/', save=True, rebuild=False) \
         -> HeteroNodeClfDataset:
     target = 'go_id'
 
