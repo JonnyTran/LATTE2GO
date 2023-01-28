@@ -11,6 +11,7 @@ import tqdm
 from botocore.client import BaseClient
 import urllib.request
 
+from logzero import logger
 from pandas.io.common import is_url
 
 
@@ -75,7 +76,7 @@ def download_url_files(output_dir:str, baseurl:str, files:List[str]):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--bucket_name", type=str, help="Name of the bucket to download from",
-                        default="latte2go-cafa-datase-m7x88wj7izxopmw3buxncifp8x5uausw2b-s3alias")
+                        default="latte2go-cafa-dataset")
     parser.add_argument("--output_dir", type=str, help="Directory to download the files to", default="data/")
     args = parser.parse_args()
 
@@ -87,7 +88,7 @@ if __name__ == "__main__":
                           file_names=file_names, folders=folders)
 
     except botocore.exceptions.NoCredentialsError as nce:
-        logging.error("No AWS credentials found! Please create your AWS credentials if you haven't done so, "
+        logger.error("No AWS credentials found! Please create your AWS credentials if you haven't done so, "
                       "and store them at ~/.aws/credentials or run `aws configure`.")
         traceback.print_exc()
         exit(1)
