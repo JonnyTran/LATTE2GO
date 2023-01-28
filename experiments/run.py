@@ -163,7 +163,7 @@ def train(hparams):
 
     elif 'DeepGraphGO' == hparams.method:
         USE_AMP = False
-        model = build_deepgraphgo_model(hparams, base_path='../DeepGraphGO')
+        model = build_deepgraphgo_model(hparams, base_path='data/DeepGraphGO')
 
     elif 'MLP' == hparams.method:
         dataset.neighbor_sizes = [0]

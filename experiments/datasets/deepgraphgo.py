@@ -6,7 +6,7 @@ import dask.dataframe as dd
 from moge.model.dgl.DeepGraphGO import load_dgl_graph, DeepGraphGO
 
 
-def build_deepgraphgo_model(hparams, base_path="../DeepGraphGO", ):
+def build_deepgraphgo_model(hparams:Namespace, base_path:str, ):
     if isinstance(hparams.pred_ntypes, str):
         assert len(hparams.pred_ntypes)
         pred_ntypes = hparams.pred_ntypes.split(" ")

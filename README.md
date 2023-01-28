@@ -8,13 +8,13 @@ and parameters on the LATTE2GO model performance.
 If there is any problem with the code, please open an issue or contact me at `nhat.tran@mavs.uta.edu`.
 
 # Prerequisites
-To run the experiments, you need at least 5.5GB of disk space, 50GB of RAM memory, and at least 10GB of GPU RAM.
+To run the experiments, you need to have `git` installed, and have at least 5.5GB of disk space, 50GB of RAM memory, and at least 10GB of GPU RAM.
 
 Please install package requirements, download the dataset, and run the bash commands provided by following 
 instructions.
 
 ## Install dependencies
-Please
+Please ensure you have the packages listed in [requirements.txt](requirements.txt) installed. You can install them by running:
 ```bash
 conda install --file requirements.txt
 ```
@@ -24,10 +24,14 @@ pip install -r requirements.txt
 ```
 
 ## Download the dataset
-The MULTISPECIES and HUMAN_MOUSE dataset for AFP is downloadable from AWS S3.
+There are two datasets used in the paper: DeepGraphGO's dataset and the pre-built HeteroNetwork datasets 
+i.e. MULTISPECIES, HUMAN_MOUSE datasets. DeepGraphGO's dataset can be downloaded from [DeepGraphGO GitHub repo](https://github.com/yourh/DeepGraphGO).
+
+The MULTISPECIES and HUMAN_MOUSE datasets are downloadable from AWS S3. **You must have [created an AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/), have AWS CLI installed, and configured your credentials to download the datasets.**
 
 Run the following commands to download necessary files to `data/` directory:
 ```bash
+aws configure # If you haven't configured your AWS credentials
 python download_data.py
 ```
 
