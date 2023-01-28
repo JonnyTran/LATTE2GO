@@ -24,7 +24,6 @@ torch_geometrics >= 2.1.0
 fairscale
 logzero
 dtrx
-p7zip
 joblib
 logzero
 tqdm

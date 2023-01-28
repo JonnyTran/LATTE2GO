@@ -39,21 +39,15 @@ def train(hparams):
     if dataset is not None:
         hparams.n_classes = dataset.n_classes
         hparams.head_node_type = dataset.head_node_type
-        print("dataset.pred_ntypes", dataset.pred_ntypes)
         print(tensor_sizes(n_classes=dataset.n_classes, class_indices=dataset.class_indices))
 
 
     ### Callbacks
     callbacks = []
-    if hparams.dataset.upper() in ['UNIPROT', "MULTISPECIES", "HUMAN_MOUSE"] or \
-            "HUMAN_MOUSE" in hparams.dataset or "MULTISPECIES" in hparams.dataset:
-        METRICS = ["BPO_aupr", "BPO_fmax", "CCO_aupr",
-                   "CCO_fmax", "MFO_aupr", "MFO_fmax",
-                   "BPO_smin", "CCO_smin", "MFO_smin"]
-        early_stopping_args = dict(monitor='val_aupr', mode='max', patience=hparams.early_stopping)
-    else:
-        METRICS = ["micro_f1", "macro_f1", dataset.name() if "ogb" in dataset.name() else "accuracy"]
-        early_stopping_args = dict(monitor='val_loss', mode='min')
+    METRICS = ["BPO_aupr", "BPO_fmax", "BPO_smin",
+               "CCO_aupr", "CCO_fmax", "CCO_smin",
+               "MFO_aupr", "MFO_fmax", "MFO_smin"]
+    early_stopping_args = dict(monitor='val_aupr', mode='max', patience=hparams.early_stopping)
 
     if hparams.method == "HGT":
         USE_AMP = False
@@ -97,7 +91,7 @@ def train(hparams):
         model = RGCNNodeClf(Namespace(**default_args), dataset, metrics=METRICS)
 
     elif "LATTE" in hparams.method:
-        USE_AMP = False
+        USE_AMP = True
         early_stopping_args['monitor'] = 'val_aupr_mean'
         early_stopping_args['patience'] = 35
 
@@ -184,6 +178,10 @@ def train(hparams):
     else:
         raise Exception(f"Unknown model {hparams.model}")
 
+    # Only calculate AUPR metrics on the training loops to reduce compute time
+    model.train_metrics.metrics = {name: metric for name, metric in model.train_metrics.metrics \
+                                   if name in ["BPO_aupr", "CCO_aupr", "MFO_aupr"]}
+
     tags = [] + hparams.dataset.split(" ")
     if hasattr(hparams, "namespaces"):
         tags.extend(hparams.namespaces)
@@ -256,7 +254,7 @@ if __name__ == "__main__":
     parser.add_argument('--ntype_subset', type=str, default="Protein")
 
     parser.add_argument('--train_ratio', type=float, default=None)
-    parser.add_argument('--early_stopping', type=int, default=15)
+    parser.add_argument('--early_stopping', type=int, default=5)
 
     parser.add_argument('--num_gpus', type=int, default=1)
     parser.add_argument('--seed', type=int, default=random.randint(0, int(1e4)))
