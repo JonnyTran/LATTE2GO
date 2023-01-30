@@ -87,7 +87,7 @@ if __name__ == "__main__":
         download_s3_files(client, bucket_name=args.bucket_name, output_dir=args.output_dir,
                           file_names=file_names, folders=folders)
 
-    except botocore.exceptions.NoCredentialsError as nce:git
+    except botocore.exceptions.NoCredentialsError as nce:
         logger.error("No AWS credentials found! Please create your AWS credentials if you haven't done so, "
                       "and store them at ~/.aws/credentials or run `aws configure`.")
         traceback.print_exc()
