@@ -2,7 +2,7 @@
 
 In this repository, you will be able to reproduce the results of the paper 
 "Protein function prediction by incorporating knowledge graph representation of heterogeneous interactions and Gene Ontology."
-In addition, you will be able to run the ablation experiments to study the effect of various heterogeneous dataset inputs and parameters on the LATTE2GO model performance.
+In addition, you will be able to run the ablation experiments to study the effect of various inputs of heterogeneous interaction graphs and parameters on the LATTE2GO model performance.
 
 If there is any problem with the code, please open an issue or contact me at `nhat.tran@mavs.uta.edu`.
 
