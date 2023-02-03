@@ -20,9 +20,9 @@ from torch_geometric.data import HeteroData
 from torch_geometric.data import InMemoryDataset as PyGInMemoryDataset
 from torch_sparse import SparseTensor
 
-from moge.model.tensor import tensor_sizes
-from moge.network.hetero import HeteroNetwork
-from moge.preprocess.edge_index import select_mask
+from latte.model.tensor import tensor_sizes
+from latte.network.hetero import HeteroNetwork
+from latte.preprocess.edge_index import select_mask
 
 
 class Graph:

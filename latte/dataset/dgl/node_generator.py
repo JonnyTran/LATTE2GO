@@ -17,11 +17,11 @@ from sklearn.preprocessing import LabelBinarizer
 from torch import Tensor
 from torch.utils.data import DataLoader
 
-from moge.dataset.dgl.samplers import ImportanceSampler
-from moge.dataset.graph import HeteroGraphDataset
-from moge.model.tensor import tensor_sizes
-from moge.network.hetero import HeteroNetwork
-from moge.preprocess.metapaths import reverse_metapath, unreverse_metapath, is_reversed, is_negative
+from latte.dataset.dgl.samplers import ImportanceSampler
+from latte.dataset.graph import HeteroGraphDataset
+from latte.model.tensor import tensor_sizes
+from latte.network.hetero import HeteroNetwork
+from latte.preprocess.metapaths import reverse_metapath, unreverse_metapath, is_reversed, is_negative
 
 def copy_ndata(old_g: dgl.DGLHeteroGraph, new_g: dgl.DGLHeteroGraph) -> dgl.DGLHeteroGraph:
     for ntype in old_g.ntypes:

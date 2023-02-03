@@ -28,9 +28,9 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from moge.model.metrics import Metrics, add_aggregated_metrics
-from moge.model.trainer import NodeEmbeddingEvaluator
-from moge.model.tensor import to_device
+from latte.model.metrics import Metrics, add_aggregated_metrics
+from latte.model.trainer import NodeEmbeddingEvaluator
+from latte.model.tensor import to_device
 
 
 def get_pid_list(pid_list_file):

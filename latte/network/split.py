@@ -10,7 +10,7 @@ import tqdm
 from logzero import logger
 from networkx.classes.reportviews import EdgeView
 
-from moge.model.tensor import tensor_sizes
+from latte.model.tensor import tensor_sizes
 
 
 class TrainTestSplit():

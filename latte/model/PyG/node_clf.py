@@ -22,19 +22,19 @@ from torch.utils.data import DataLoader
 from torch_geometric.nn import MetaPath2Vec as Metapath2vec
 from torch_sparse import SparseTensor
 
-from moge.dataset.PyG.hetero_generator import HeteroNodeClfDataset
-from moge.dataset.graph import HeteroGraphDataset
-from moge.model.PyG.conv import HGT, RGCN
-from moge.model.PyG.latte import LATTE as LATTE_Flat
-from moge.model.PyG.metapaths import get_edge_index_values
-from moge.model.PyG.relations import RelationAttention, RelationMultiLayerAgg
-from moge.model.classifier import DenseClassification, LabelNodeClassifer
-from moge.model.dgl.DeepGraphGO import pair_aupr, fmax
-from moge.model.encoder import HeteroSequenceEncoder, HeteroNodeFeatureEncoder
-from moge.model.losses import ClassificationLoss
-from moge.model.metrics import Metrics
-from moge.model.tensor import filter_samples_weights, stack_tensor_dicts, activation, concat_dict_batch, to_device
-from moge.model.trainer import NodeClfTrainer, print_pred_class_counts
+from latte.dataset.PyG.hetero_generator import HeteroNodeClfDataset
+from latte.dataset.graph import HeteroGraphDataset
+from latte.model.PyG.conv import HGT, RGCN
+from latte.model.PyG.latte import LATTE as LATTE_Flat
+from latte.model.PyG.metapaths import get_edge_index_values
+from latte.model.PyG.relations import RelationAttention, RelationMultiLayerAgg
+from latte.model.classifier import DenseClassification, LabelNodeClassifer
+from latte.model.dgl.DeepGraphGO import pair_aupr, fmax
+from latte.model.encoder import HeteroSequenceEncoder, HeteroNodeFeatureEncoder
+from latte.model.losses import ClassificationLoss
+from latte.model.metrics import Metrics
+from latte.model.tensor import filter_samples_weights, stack_tensor_dicts, activation, concat_dict_batch, to_device
+from latte.model.trainer import NodeClfTrainer, print_pred_class_counts
 
 
 class AFPNodeClf(NodeClfTrainer):

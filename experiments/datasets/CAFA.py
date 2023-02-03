@@ -16,10 +16,10 @@ from logzero import logger
 from openomics.database.ontology import UniProtGOA, get_predecessor_terms
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from moge.dataset.PyG.hetero_generator import HeteroNodeClfDataset
-from moge.model.dgl.DeepGraphGO import load_protein_dataset
-from moge.network.hetero import HeteroNetwork
-from moge.network.labels import to_list_of_strs
+from latte.dataset.PyG.hetero_generator import HeteroNodeClfDataset
+from latte.model.dgl.DeepGraphGO import load_protein_dataset
+from latte.network.hetero import HeteroNetwork
+from latte.network.labels import to_list_of_strs
 
 
 def get_slug_path(name: str, hparams: Namespace, labels_dataset: str, ntype_subset: List[str], pred_ntypes: List[str],

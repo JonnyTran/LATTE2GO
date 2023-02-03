@@ -11,8 +11,8 @@ from torch import nn, Tensor
 from torch_geometric.nn.inits import glorot, zeros
 from transformers import BertForSequenceClassification, BertConfig
 
-from moge.dataset.PyG.hetero_generator import HeteroNodeClfDataset
-from moge.dataset.graph import HeteroGraphDataset
+from latte.dataset.PyG.hetero_generator import HeteroNodeClfDataset
+from latte.dataset.graph import HeteroGraphDataset
 
 
 class LabelNodeClassifer(nn.Module):

@@ -28,12 +28,12 @@ from torch import Tensor
 from torch_geometric.data import HeteroData
 from torch_sparse import SparseTensor
 
-from moge.model.tensor import tensor_sizes
-from moge.network.attributes import AttributedNetwork
-from moge.network.labels import parse_labels
-from moge.network.split import TrainTestSplit
-from moge.preprocess.edge_index import get_edge_index_dict, nx_to_edge_index, get_edge_attr_keys
-from moge.preprocess.metapaths import tag_negative_metapath, untag_negative_metapath, match_groupby_metapaths
+from latte.model.tensor import tensor_sizes
+from latte.network.graph import AttributedNetwork
+from latte.network.labels import parse_labels
+from latte.network.split import TrainTestSplit
+from latte.preprocess.edge_index import get_edge_index_dict, nx_to_edge_index, get_edge_attr_keys
+from latte.preprocess.metapaths import tag_negative_metapath, untag_negative_metapath, match_groupby_metapaths
 from openomics import MultiOmics
 from openomics.database.ontology import GeneOntology
 

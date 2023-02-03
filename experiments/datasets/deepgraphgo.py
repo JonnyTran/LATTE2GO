@@ -3,7 +3,7 @@ from collections.abc import Iterable
 
 import dask.dataframe as dd
 
-from moge.model.dgl.DeepGraphGO import load_dgl_graph, DeepGraphGO
+from latte.model.dgl.DeepGraphGO import load_dgl_graph, DeepGraphGO
 
 
 def build_deepgraphgo_model(hparams:Namespace, base_path:str, ):

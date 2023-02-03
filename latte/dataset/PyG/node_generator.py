@@ -2,9 +2,9 @@ import numpy as np
 import torch
 from ogb.nodeproppred import PygNodePropPredDataset
 
-from moge.dataset.PyG.neighbor_sampler import NeighborSamplerX
-from moge.dataset.graph import HeteroGraphDataset
-from moge.model.PyG.metapaths import join_edge_indexes
+from latte.dataset.PyG.neighbor_sampler import NeighborSamplerX
+from latte.dataset.graph import HeteroGraphDataset
+from latte.model.PyG.metapaths import join_edge_indexes
 
 
 class HeteroNeighborGenerator(HeteroGraphDataset):

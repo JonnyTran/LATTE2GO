@@ -10,9 +10,9 @@ from torch import nn as nn, Tensor, ModuleDict
 from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import softmax
 
-from moge.model.PyG.metapaths import join_metapaths, get_edge_index_values, join_edge_indexes, max_num_hops, \
+from latte.model.PyG.metapaths import join_metapaths, get_edge_index_values, join_edge_indexes, max_num_hops, \
     filter_metapaths
-from moge.model.PyG.relations import RelationAttention, RelationMultiLayerAgg
+from latte.model.PyG.relations import RelationAttention, RelationMultiLayerAgg
 
 
 class LATTEConv(MessagePassing, RelationAttention):

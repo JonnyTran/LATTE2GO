@@ -9,9 +9,9 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from torch_sparse import SparseTensor
 from transformers import BertConfig, BertForSequenceClassification
 
-from moge.dataset.PyG.hetero_generator import HeteroNodeClfDataset
-from moge.dataset.graph import HeteroGraphDataset
-from moge.model.tensor import tensor_sizes
+from latte.dataset.PyG.hetero_generator import HeteroNodeClfDataset
+from latte.dataset.graph import HeteroGraphDataset
+from latte.model.tensor import tensor_sizes
 
 logging.getLogger("transformers").setLevel(logging.ERROR)
 

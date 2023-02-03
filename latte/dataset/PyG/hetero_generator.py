@@ -29,15 +29,15 @@ from torch_geometric.data import HeteroData
 from torch_geometric.utils import remove_self_loops, to_undirected
 from torch_sparse.tensor import SparseTensor
 
-from moge.dataset.PyG.metapaths import AddMetaPaths
-from moge.dataset.PyG.neighbor_sampler import NeighborLoaderX, HGTLoaderX
-from moge.dataset.graph import HeteroGraphDataset
-from moge.dataset.io import get_attrs
-from moge.model.PyG.metapaths import convert_to_nx_edgelist, num_edges
-from moge.model.tensor import to_device, tensor_sizes
-from moge.network.hetero import HeteroNetwork
-from moge.preprocess.edge_index import get_relabled_edge_index, edge_index_to_adjs, gather_node_dict
-from moge.preprocess.metapaths import is_negative
+from latte.dataset.PyG.metapaths import AddMetaPaths
+from latte.dataset.PyG.neighbor_sampler import NeighborLoaderX, HGTLoaderX
+from latte.dataset.graph import HeteroGraphDataset
+from latte.dataset.io import get_attrs
+from latte.model.PyG.metapaths import convert_to_nx_edgelist, num_edges
+from latte.model.tensor import to_device, tensor_sizes
+from latte.network.hetero import HeteroNetwork
+from latte.preprocess.edge_index import get_relabled_edge_index, edge_index_to_adjs, gather_node_dict
+from latte.preprocess.metapaths import is_negative
 
 
 def reverse_metapath_name(metapath: Tuple[str, str, str]) -> Tuple[str, str, str]:

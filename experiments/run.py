@@ -18,8 +18,8 @@ from pytorch_lightning.callbacks import EarlyStopping
 
 sys.path.insert(0, "../LATTE2GO/") # Needed to import moge
 
-from moge.model.PyG.node_clf import LATTEFlatNodeClf, HGTNodeClf, MLP, RGCNNodeClf
-from moge.model.tensor import tensor_sizes
+from latte.model.PyG.node_clf import LATTEFlatNodeClf, HGTNodeClf, MLP, RGCNNodeClf
+from latte.model.tensor import tensor_sizes
 
 from experiments.datasets.deepgraphgo import build_deepgraphgo_model
 from experiments.utils import parse_yaml_config, select_empty_gpus
