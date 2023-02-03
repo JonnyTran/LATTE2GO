@@ -30,7 +30,7 @@ from latte.model.PyG.metapaths import get_edge_index_values
 from latte.model.PyG.relations import RelationAttention, RelationMultiLayerAgg
 from latte.model.classifier import DenseClassification, LabelNodeClassifer
 from latte.model.dgl.DeepGraphGO import pair_aupr, fmax
-from latte.model.encoder import HeteroSequenceEncoder, HeteroNodeFeatureEncoder
+from latte.model.encoder import HeteroNodeFeatureEncoder
 from latte.model.losses import ClassificationLoss
 from latte.model.metrics import Metrics
 from latte.model.tensor import filter_samples_weights, stack_tensor_dicts, activation, concat_dict_batch, to_device
@@ -598,11 +598,7 @@ class HGTNodeClf(AFPNodeClf):
         self._name = f"HGT-{hparams.n_layers}"
         self.collate_fn = collate_fn
         # Node attr input
-        if hasattr(dataset, 'seq_tokenizer'):
-            self.seq_encoder = HeteroSequenceEncoder(hparams, dataset)
-
-        if not hasattr(self, "seq_encoder") or len(self.seq_encoder.seq_encoders.keys()) < len(dataset.node_types):
-            self.encoder = HeteroNodeFeatureEncoder(hparams, dataset)
+        self.encoder = HeteroNodeFeatureEncoder(hparams, dataset)
 
         self.embedder = HGT(embedding_dim=hparams.embedding_dim, num_layers=hparams.n_layers,
                             num_heads=hparams.attn_heads,
@@ -631,11 +627,7 @@ class RGCNNodeClf(AFPNodeClf):
         self._name = f"RGCN-{hparams.n_layers}"
         self.collate_fn = collate_fn
         # Node attr input
-        if hasattr(dataset, 'seq_tokenizer'):
-            self.seq_encoder = HeteroSequenceEncoder(hparams, dataset)
-
-        if not hasattr(self, "seq_encoder") or len(self.seq_encoder.seq_encoders.keys()) < len(dataset.node_types):
-            self.encoder = HeteroNodeFeatureEncoder(hparams, dataset)
+        self.encoder = HeteroNodeFeatureEncoder(hparams, dataset)
 
         self.relations = tuple(m for m in dataset.metapaths if m[0] == m[-1] and m[0] in self.head_node_type)
         print(self.name(), self.relations)
