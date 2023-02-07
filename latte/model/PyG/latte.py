@@ -73,10 +73,7 @@ class LATTEConv(MessagePassing, RelationAttention):
         self.linear = nn.ModuleDict(
             {node_type: nn.Linear(input_dim, output_dim, bias=True) \
              for node_type in self.node_types})  # W.shape (F x F)
-        # self.linear_r = nn.ModuleDict(
-        #     {node_type: nn.Linear(input_dim, output_dim, bias=True) \
-        #      for node_type in self.node_types})  # W.shape (F x F}
-
+        
         self.out_channels = self.embedding_dim // attn_heads
         self.attn = nn.Parameter(torch.rand((len(self.metapaths), attn_heads, self.out_channels * 2)))
 
@@ -93,11 +90,6 @@ class LATTEConv(MessagePassing, RelationAttention):
         self.rel_attn_bias = nn.ParameterDict({
             ntype: nn.Parameter(Tensor(self.num_tail_relations(ntype)).fill_(0.0)) \
             for ntype in self.node_types if self.num_tail_relations(ntype) > 1})
-
-        # self.relation_conv: Dict[str, MetapathGATConv] = nn.ModuleDict({
-        #     ntype: MetapathGATConv(output_dim, metapaths=self.get_tail_relations(ntype), n_layers=1,
-        #                            attn_heads=attn_heads, attn_dropout=attn_dropout) \
-        #     for ntype in self.node_types})
 
         if attn_activation == "PReLU":
             self.alpha_activation = nn.PReLU(init=0.2)
@@ -143,25 +135,6 @@ class LATTEConv(MessagePassing, RelationAttention):
         if hasattr(self, "rel_attn_w"):
             for ntype, rel_attn in self.rel_attn_w.items():
                 nn.init.xavier_normal_(rel_attn, gain=1.0)
-
-    # def get_beta_weights(self, query: Tensor, key: Tensor, ntype: str) -> Tensor:
-    #     beta_l = (query * self.rel_attn_l[ntype]).sum(dim=-1)
-    #     beta_r = (key * self.rel_attn_r[ntype]).sum(dim=-1)
-    #
-    #     beta = beta_l[:, None, :] + beta_r
-    #     beta = F.leaky_relu(beta, negative_slope=0.2)
-    #     beta = F.softmax(beta, dim=1)
-    #     # beta = F.dropout(beta, p=self.attn_dropout, training=self.training)
-    #     return beta
-
-    # def get_beta_weights(self, query: Tensor, key: Tensor, ntype: str) -> Tensor:
-    #     beta_l = F.relu(query * self.rel_attn_l[ntype])
-    #     beta_r = F.relu(key * self.rel_attn_r[ntype])
-    #
-    #     beta = (beta_l[:, None, :, :] * beta_r).sum(-1) + self.rel_attn_bias[ntype][None, :, None]
-    #     beta = F.softmax(beta, dim=1)
-    #     # beta = F.dropout(beta, p=self.attn_dropout, training=self.training)
-    #     return beta
 
     def get_beta_weights(self, query: Tensor, key: Tensor, ntype: str) -> Tensor:
         x_l = query[:, None, :] * self.rel_attn_l[ntype]
@@ -225,10 +198,6 @@ class LATTEConv(MessagePassing, RelationAttention):
 
             if verbose:
                 rel_embedding = h_out[ntype].detach().clone()
-
-            # GATRelAttn
-            # h_out[ntype] = h_out[ntype].view(h_out[ntype].size(0), self.num_tail_relations(ntype), self.embedding_dim)
-            # h_out[ntype], betas[ntype] = self.relation_conv[ntype].forward(h_out[ntype])
 
             # Soft-select the relation-specific embeddings by a weighted average with beta[node_type]
             betas[ntype] = self.get_beta_weights(query=r_dict[ntype], key=h_out[ntype], ntype=ntype)
