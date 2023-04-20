@@ -76,7 +76,7 @@ def download_url_files(output_dir:str, baseurl:str, files:List[str]):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--bucket_name", type=str, help="Name of the bucket to download from",
-                        default="latte2go-cafa-dataset")
+                        default="latte2go-cafa-datasets")
     parser.add_argument("--output_dir", type=str, help="Directory to download the files to", default="data/")
     args = parser.parse_args()
 
@@ -95,13 +95,14 @@ if __name__ == "__main__":
 
 
     # Download DeepGraphGO dataset
-    download_url_files(output_dir=os.path.join(args.output_dir, "DeepGraphGO/data"),
-                       baseurl="https://raw.githubusercontent.com/yourh/DeepGraphGO/master/data/",
-                       files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
-                                        'data.z06'])
-    print("Unzipping DeepGraphGO dataset")
-    os.system("cd data/DeepGraphGO/data")
-    os.system("dtrx -fo data.zip")
-    print("Preprocessing DeepGraphGO dataset")
-    os.system("python preprocessing.py ppi_mat.npz ppi_dgl_top_100")
-    print("Done!")
+    if not os.path.exists(os.path.join(args.output_dir, "DeepGraphGO")):
+        download_url_files(output_dir=os.path.join(args.output_dir, "DeepGraphGO/data"),
+                           baseurl="https://raw.githubusercontent.com/yourh/DeepGraphGO/master/data/",
+                           files=['data.zip', 'data.z01', 'data.z02', 'data.z03', 'data.z04', 'data.z05',
+                                            'data.z06'])
+        print("Unzipping DeepGraphGO dataset")
+        os.system("cd data/DeepGraphGO/data")
+        os.system("dtrx -fo data.zip")
+        print("Preprocessing DeepGraphGO dataset")
+        os.system("python preprocessing.py ppi_mat.npz ppi_dgl_top_100")
+        print("Done!")
