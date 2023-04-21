@@ -53,7 +53,10 @@ def download_s3_files(s3: BaseClient, bucket_name:str, output_dir:str, file_name
         folder_path.mkdir(parents=True, exist_ok=True)
 
     for file_name in tqdm.tqdm(file_names, desc=f"Downloading dataset files to {output_dir}", total=len(file_names)):
-        object_size = s3.head_object(Bucket=bucket_name, Key=file_name)["ContentLength"]
+        try:
+            object_size = s3.head_object(Bucket=bucket_name, Key=file_name)["ContentLength"]
+        except:
+            object_size = None
 
         with tqdm.tqdm(total=object_size, unit="B", unit_scale=True, desc=file_name) as pbar:
             file_path = Path.joinpath(output_dir, file_name) # Create folder for parent directory
